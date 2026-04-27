@@ -16,7 +16,29 @@ This skill conducts comprehensive product research to inform prototype design. I
 - Check for optional `--idea` flag and capture the quoted feature idea
 - Store both for use throughout the workflow
 
-### 2. Create Project Directory
+### 2. Gather Preliminary Inputs
+Before starting research, ask the user:
+
+```
+Before I dive into research on [product-name], do you have any of the following?
+
+1. **Preliminary research or thinking** — notes, hypotheses, or early analysis you've already done
+2. **User interview notes or feedback** — conversations with real users, survey results, or qualitative insights
+3. **Specific focus area** — a particular flow, feature, or problem you want to redesign (e.g., "the onboarding flow", "the checkout experience", "the content creation tool")
+4. **None — start fresh**
+
+(Enter 1-4, or paste/describe what you have)
+```
+
+**Wait for user response.** If user provides:
+- **Preliminary research:** Read and incorporate as a starting hypothesis. Cross-reference and validate (or challenge) during research.
+- **User interview notes:** Extract key themes (jobs-to-be-done, emotional pain points, workarounds, unmet needs). Incorporate into PM synthesis.
+- **Specific focus area:** Use this to scope the competitive comparison (Step 6) and product walkthrough (Step 4) around this particular flow/feature.
+- **None:** Proceed with broad research.
+
+Store the focus area (if provided) — it will drive targeted competitive analysis later.
+
+### 3. Create Project Directory
 - Create directory: `~/pm-skills/projects/<product-name>/`
 - Create subdirectory: `~/pm-skills/projects/<product-name>/ui-screenshots/`
 - Use `mkdir -p` to ensure parent directories exist
@@ -44,7 +66,36 @@ Search queries to use:
 - "<product-name> technical specifications"
 - "<product-name> data model"
 
-### 4. Fetch User Reviews
+### 4a. Product Walkthrough Audit (Real Screenshots)
+
+Capture and analyze the actual product experience — not just what's described on their website, but what users actually encounter.
+
+**Step 1: Capture Current Product Screens**
+- Use `firecrawl_scrape` with `formats: ["screenshot"]` on the product's key pages (homepage, signup, main dashboard, the specific flow being studied)
+- OR ask the user to provide screenshots: "Can you capture 10-15 screenshots walking through [the focus area / the core product flow]? Save them to `~/pm-skills/projects/<product-name>/ui-screenshots/` numbered sequentially (e.g., `01-landing.png`, `02-signup.png`, etc.)"
+- If the product is a mobile app, ask the user to screen-record or screenshot the key flow
+
+**Step 2: Sequential Journey Analysis**
+For each screenshot (in order), document:
+- **What screen is this?** (name and purpose)
+- **What works well?** (clear UI, good copy, smart defaults)
+- **What's confusing or broken?** (unclear CTAs, empty states, errors, missing guidance)
+- **What's the user's emotional state here?** (confident, lost, frustrated, delighted)
+
+**Step 3: Journey Map Output**
+Create a journey map table:
+
+| Step | Screen | What Happens | Works Well | Friction / Issues | User Emotion |
+|------|--------|--------------|------------|-------------------|--------------|
+| 1 | Landing page | User arrives | ... | ... | Curious |
+| 2 | Sign up | ... | ... | ... | ... |
+| ... | ... | ... | ... | ... | ... |
+
+Save as part of the research brief (Section: "Current Product Walkthrough").
+
+**Key insight:** This step often reveals broken features, misleading UI, and real friction that no amount of web research or review reading can surface. In the Creatify project, this step revealed that the URL import feature was completely broken — a critical finding that shaped the entire redesign.
+
+### 4b. Fetch User Reviews
 Run the review scraper script:
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/../../scripts/fetch_reviews.py --app-name "<product-name>"
@@ -60,7 +111,7 @@ The script will save reviews to a JSON file. Note the output location and read t
 - Try `WebFetch` first on App Store, Trustpilot, G2, Capterra, and third-party review blog URLs
 - If WebFetch returns empty or incomplete content, retry with `firecrawl_scrape` (these sites often have JS-rendered content that Firecrawl handles well)
 
-### 5. Research Competitive Landscape
+### 5a. Research Competitive Landscape
 Web search for 3-5 direct competitors:
 - "<product-name> competitors"
 - "<product-name> alternatives"
@@ -70,6 +121,30 @@ For each competitor, gather:
 - Key differentiating features
 - Pricing comparison
 - Market segment focus
+
+### 5b. Competitive Flow/Feature Teardown
+
+**This step compares how competitors solve the same specific problem you're designing for.** The comparison target should match the project's focus area (from Step 2):
+
+- If redesigning **onboarding**, compare onboarding flows across competitors
+- If redesigning a **content creation tool**, compare the creation experience
+- If redesigning **checkout/payment**, compare purchase flows
+- If adding a **new feature** (e.g., AI assistant, collaboration), compare how competitors (or adjacent products) implement that same capability
+
+**For 3-5 competitors, document the same flow:**
+
+| Competitor | Steps to Complete | Time to Value | Clever Solutions | Friction Points |
+|------------|-------------------|---------------|------------------|-----------------|
+| Competitor A | ... | ... | ... | ... |
+| Competitor B | ... | ... | ... | ... |
+| ... | ... | ... | ... | ... |
+
+**Identify patterns:**
+- What do the best products all do? (table stakes)
+- What does only 1 product do well? (differentiators to learn from)
+- What does nobody do well? (opportunity gaps)
+
+Use screenshots where possible — `firecrawl_scrape` with `formats: ["screenshot"]` on competitor pages, or web search for "<competitor> <feature> screenshots".
 
 ### 6. Behavioral & Domain Research
 Search for relevant research based on the product domain:
@@ -228,6 +303,13 @@ Research complete. Run `/pm-design <product-name>` to start the design phase.
 - All template sections filled with substantive content
 - Design tokens extracted if screenshots available
 - Clear, actionable opportunity areas identified
+- **Product Walkthrough Audit must include:**
+  - Sequential journey map of actual product screens
+  - Specific friction points and broken features identified
+  - User emotional state mapped across the journey
+- **Competitive Flow Teardown must include:**
+  - Same flow/feature compared across 3+ competitors
+  - Patterns identified (table stakes, differentiators, opportunity gaps)
 - **PM Synthesis must include:**
   - User journey reconstruction with complaints mapped to specific stages
   - Branching 5 Whys for top 3 complaints (minimum 2-3 hypotheses per branch, not single-path)

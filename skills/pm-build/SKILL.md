@@ -30,8 +30,8 @@ When the [Superpowers plugin](https://github.com/obra/superpowers) is available,
 - **RECOMMENDED SUB-SKILL:** `superpowers:brainstorming` — Before committing to a layout variant, use the brainstorming discipline to explore the design approach more thoroughly. This helps validate assumptions about persona needs, surface alternative interaction patterns, and ensure the chosen layout truly serves the user's goal.
 
 **Build Phase (Steps 5-9 - Prototype Construction):**
-- **RECOMMENDED SUB-SKILL:** `superpowers:executing-plans` — The prototype build has natural independent components (Goal Banner, Status Rings, Coach Section, Meal Logging, Voice Input, Coach Chat, Journal Tracker) that map well to bite-sized tasks with quality checkpoints between each.
-- **RECOMMENDED SUB-SKILL:** `superpowers:subagent-driven-development` — Each component (A through G) can be treated as an independent task suitable for subagent-driven development, enabling parallel execution and focused review per component.
+- **RECOMMENDED SUB-SKILL:** `superpowers:executing-plans` — The prototype build has natural independent components (derived from design spec) that map well to bite-sized tasks with quality checkpoints between each.
+- **RECOMMENDED SUB-SKILL:** `superpowers:subagent-driven-development` — Each component can be treated as an independent task suitable for subagent-driven development, enabling parallel execution and focused review per component.
 
 > **Note:** These are recommendations, not requirements. The pm-build skill works fully without Superpowers installed.
 
@@ -72,146 +72,99 @@ Read the base template:
 
 This provides the React/hooks structure, state management patterns, and component architecture.
 
-### 4. Propose Layout Variants
-Based on the persona's goal and coach personality, propose 2-3 layout variants:
+### 4. Propose Layout & Component Architecture
+Based on the design spec, persona goals, and product type, propose 2-3 layout variants **tailored to the specific product**.
+
+**Step 4a: Identify Product Archetype**
+Read the design spec and classify the product:
+- **SaaS / Creative Tool** (e.g., Creatify, Canva, Figma) → focus on workspace, creation flow, onboarding
+- **Consumer Health / Fitness** (e.g., Whoop, Oura, Noom) → focus on tracking, progress, coaching
+- **Marketplace / E-commerce** (e.g., Shopify, Etsy) → focus on browse, cart, checkout
+- **Social / Community** (e.g., Discord, Strava) → focus on feed, profiles, interactions
+- **Productivity / Workflow** (e.g., Notion, Linear) → focus on task management, views, collaboration
+- **Other** → derive layout patterns from the design spec's pain points and solutions
+
+**Step 4b: Propose Layout Variants**
+Generate 2-3 layout options that are **specific to the product's design spec and persona**. Each variant should:
+- Have a descriptive name reflecting the product context
+- Describe the screen structure (what goes where)
+- Explain the interaction philosophy (why this layout serves the persona)
+- Note which pain points from the design spec it addresses
 
 **Present to user:**
 ```
-Based on [persona name]'s goal ([their primary goal]), I propose these layout options:
+Based on [persona name]'s goal ([primary goal]) and the [product] design spec, I propose these layout options:
 
-1. **Goal-Centric Dashboard**
-   - Large progress rings dominate the view (goal visibility)
-   - Coach appears as floating assistant (bottom-right)
-   - Quick action buttons for logging (speed of input)
-   - Best for: Highly motivated, data-driven personas
+1. **[Layout Name A]**
+   - [Screen structure description]
+   - [Key interaction pattern]
+   - Addresses: [which pain points from design spec]
+   - Best for: [what type of user behavior]
 
-2. **Coach-First Interface**
-   - Coach message prominently at top (guidance/support)
-   - Game plan timeline below (structure)
-   - Compact progress indicators (less overwhelming)
-   - Best for: Personas needing more hand-holding and encouragement
+2. **[Layout Name B]**
+   - [Screen structure description]
+   - [Key interaction pattern]
+   - Addresses: [which pain points from design spec]
+   - Best for: [what type of user behavior]
 
-3. **Activity Stream Layout**
-   - Chronological feed of coach messages + user logs (narrative)
-   - Inline progress updates (contextual feedback)
-   - Bottom nav for modes (journal, goals, coach chat)
-   - Best for: Personas who think in stories/timelines
+3. **[Layout Name C]**
+   - [Screen structure description]
+   - [Key interaction pattern]
+   - Addresses: [which pain points from design spec]
+   - Best for: [what type of user behavior]
 
 Which layout best fits [persona name]'s needs? (Enter 1, 2, or 3)
 ```
 
 > **Superpowers tip:** If `superpowers:brainstorming` is available and hasn't been run for this project, consider using it here to explore the design approach more thoroughly before committing to a layout.
 
-**Wait for user selection**.
+**Wait for user selection.**
+
+**Step 4c: Define Component Set**
+Based on the selected layout and the design spec's solution proposals, define the **specific components** this prototype needs. Components should map directly to the features and flows described in the design spec — NOT a generic template.
+
+Present to user:
+```
+For the [selected layout] layout, I'll build these components:
+
+A. [Component Name] — [what it does, 1 line]
+B. [Component Name] — [what it does, 1 line]
+C. [Component Name] — [what it does, 1 line]
+...
+
+Does this cover the key interactions? Anything to add or remove?
+```
+
+**Wait for user confirmation** before proceeding to build.
 
 ### 5. Build Full JSX Prototype
-Using the scaffold and selected layout, build a complete prototype with these components.
+Using the scaffold, selected layout, and the component set defined in Step 4c, build a complete prototype.
 
-> **Superpowers tip:** Each component (A through G) below is an independent task suitable for `superpowers:executing-plans` or `superpowers:subagent-driven-development` if the platform supports it.
+> **Superpowers tip:** Each component is an independent task suitable for `superpowers:executing-plans` or `superpowers:subagent-driven-development` if the platform supports it.
 
-#### A. Goal Banner (Top Section)
-- Gradient overlay background (primary → secondary color from design tokens)
-- Display primary goal from persona spec (e.g., "Get to 12% body fat")
-- Optional: Target date or milestone
-- Motivational tagline from coach personality
+**For each component in the component set:**
 
-#### B. Status Rings/Gauges
-- 2-4 circular progress indicators (depending on layout variant)
-- Each labeled with goal-relevance (e.g., "Recovery: 85% → 12% BF goal")
-- Use design token colors for rings (primary for on-track, accent for needs attention)
-- Percentage values + trend indicators (↑↓)
-- Make responsive to container width
+1. **Read the design spec's solution** for this component — what problem does it solve? What's the interaction flow?
+2. **Implement the full interaction** with React state management:
+   - Multi-stage flows should use `useState` to track stages
+   - Overlays/modals should have open/close state
+   - Forms should capture and display input
+   - Lists should be interactive (click to expand, mark complete, etc.)
+3. **Apply the persona's voice** — all copy, labels, and messages should reflect the persona's personality and communication style
+4. **Make it feel real** — use realistic demo data, not lorem ipsum. Pre-populate with content that matches the product domain.
 
-#### C. Coach Section
-**Coach Card/Panel:**
-- Persona photo placeholder (gray circle or silhouette icon)
-- Coach name from persona spec
-- Current coach message (conversational, matches coach personality)
-- "View Game Plan" button/link
+**Common component patterns** (use as reference, adapt to the product):
 
-**Game Plan Timeline:**
-- 3-5 timeline items (today's recommendations)
-- Each with icon, description, status (pending/done)
-- Matches behavioral framework (e.g., habit triggers, progress milestones)
+- **Multi-step flows** (onboarding, creation, checkout): Stage-by-stage progression with `useState`, back/forward navigation, progress indicator
+- **Dashboard/overview**: Status cards, progress indicators, quick-action buttons, summary metrics
+- **Chat/conversational UI**: Message list (scrollable), input bar, pre-populated demo messages, send functionality
+- **Content feed/stream**: Chronological items, type icons, timestamps, click-to-expand details
+- **Forms with smart defaults**: Pre-filled values, quick-select options, inline validation feedback
+- **Split-screen layouts**: Side-by-side panels (e.g., chat + canvas, list + detail)
+- **Overlay/modal flows**: Full-screen modals with backdrop blur, header + close button, self-contained interaction
+- **Voice/media input**: Multi-state buttons (idle → active → processing → result) with CSS animations
 
-#### D. Interactive Meal/Photo Logging
-**3-stage flow (use React state):**
-
-**Stage 1: Input Trigger**
-- "Log Meal" or "Add Photo" button (prominent in layout)
-- Plus icon or camera icon
-
-**Stage 2: Capture Interface**
-- Camera placeholder (dashed border, "Take Photo" text)
-- OR text input for meal description
-- Quick tags/categories (Breakfast, Lunch, Snack, etc.)
-- "Submit" and "Cancel" buttons
-
-**Stage 3: Confirmation Feedback**
-- Success message from coach (personality-appropriate)
-- Updated goal progress (e.g., "3/5 meals logged today")
-- Option to add notes or continue logging
-- Auto-return to main view after 2s (simulated with setTimeout or animation)
-
-Implement with `useState` hooks for flow stage management.
-
-#### E. Voice Input Component
-**4 states (managed with useState):**
-
-**State 1: Idle**
-- Microphone icon button
-- Label: "Tell me about your day" or similar (coach personality)
-
-**State 2: Listening**
-- Pulsing/animated microphone icon
-- Waveform animation (CSS keyframes)
-- Label: "Listening..."
-
-**State 3: Processing**
-- Spinner or processing animation
-- Label: "Understanding..."
-
-**State 4: Response**
-- Coach reply message appears
-- Transition to conversation or return to idle
-
-Use button click to cycle through states (demo purposes).
-
-#### F. Coach Chat (Full-Screen Overlay)
-**Trigger:**
-- "Chat with Coach" button or coach avatar click
-
-**Overlay Interface:**
-- Full-screen modal (z-index overlay, backdrop blur)
-- Chat header with coach name + close button (×)
-- Message list (scrollable):
-  - Coach messages (left-aligned, coach avatar)
-  - User messages (right-aligned, user avatar/initial)
-  - Timestamp labels
-- Input bar at bottom:
-  - Text input field
-  - Microphone button (links to voice input component)
-  - Send button
-
-**Demo messages:**
-- Prepopulate 3-5 example messages showing coach personality
-- Make input functional (add message to list on send)
-
-#### G. My Log Journal Tracker
-**Journal View:**
-- Date selector (today, past days)
-- List of logged items (meals, photos, notes) for selected day
-- Each entry shows:
-  - Timestamp
-  - Type icon (meal, photo, note)
-  - Content preview
-  - Coach feedback (if any)
-- "Add Entry" button (links to logging flow)
-
-**Entry Detail:**
-- Click entry to expand
-- Full content + coach analysis
-- Goal impact indicator (how this affected progress)
+**Key principle:** The components should emerge from the design spec, not from a generic template. A SaaS onboarding prototype will have completely different components than a fitness tracker or a marketplace.
 
 ### 6. Apply Design System
 **If design-tokens.md exists:**
@@ -237,12 +190,12 @@ Use React hooks for state management:
 - Event handlers for all buttons and inputs
 
 **Demo interactions to implement:**
-- Open/close coach chat overlay
-- Navigate through logging flow stages
-- Toggle voice input states
-- Add messages to chat
-- Add entries to journal log
-- Click timeline items to mark complete
+- All components from Step 4c should be interactive
+- Multi-step flows should progress through stages
+- Overlays/modals should open and close
+- Forms should accept and display input
+- Lists should respond to clicks (expand, select, navigate)
+- Buttons should have visible feedback (state changes, animations)
 
 Make the prototype feel interactive even though it's a demo (not connected to backend).
 
@@ -356,12 +309,13 @@ When ready, run `/pm-package --project <project-name>` to generate stakeholder d
 ```
 
 ## Quality Standards
-- All 7 core components (A-G) fully implemented
+- All components defined in Step 4c fully implemented
 - Smooth state transitions (no console errors)
 - Mobile-responsive layout (fits iPhone frame)
-- Coach personality evident in messages/copy
+- Persona voice and personality evident in all copy/messages
 - Design system properly applied (colors, fonts, spacing)
 - Interactive demo feels polished (not wireframe-quality)
+- Components are product-appropriate (not generic templates)
 
 ## Technical Requirements
 - React 18 hooks-based component
