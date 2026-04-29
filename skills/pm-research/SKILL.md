@@ -2,7 +2,7 @@
 name: pm-research
 description: Research a product for PM prototype design. Gathers features, user reviews, competitors, UI references, and design system.
 argument-hint: <product-name> [--idea "your feature idea"]
-allowed-tools: Read Write Edit Glob Grep Bash(python3:*) WebSearch WebFetch mcp__firecrawl__firecrawl_scrape mcp__firecrawl__firecrawl_search mcp__firecrawl__firecrawl_map mcp__firecrawl__firecrawl_extract
+allowed-tools: Read Write Edit Glob Grep Bash(python3:*) WebSearch WebFetch mcp__firecrawl__firecrawl_scrape mcp__firecrawl__firecrawl_search mcp__firecrawl__firecrawl_map mcp__firecrawl__firecrawl_extract mcp__Claude_in_Chrome__navigate mcp__Claude_in_Chrome__read_page mcp__Claude_in_Chrome__computer mcp__Claude_in_Chrome__get_page_text mcp__Claude_in_Chrome__find mcp__Claude_in_Chrome__list_connected_browsers mcp__Claude_in_Chrome__select_browser mcp__Claude_in_Chrome__tabs_create_mcp mcp__Claude_in_Chrome__tabs_context_mcp mcp__Claude_in_Chrome__read_page mcp__Claude_in_Chrome__resize_window mcp__Claude_in_Chrome__upload_image
 ---
 
 # PM Research Skill
@@ -66,23 +66,71 @@ Search queries to use:
 - "<product-name> technical specifications"
 - "<product-name> data model"
 
-### 4a. Product Walkthrough Audit (Real Screenshots)
+### 4a. Product Walkthrough Audit (Live Browser Testing)
 
-Capture and analyze the actual product experience — not just what's described on their website, but what users actually encounter.
+Capture and analyze the actual product experience — not just what's described on their website, but what users actually encounter. **This step requires walking through the real product in a browser.**
 
-**Step 1: Capture Current Product Screens**
-- Use `firecrawl_scrape` with `formats: ["screenshot"]` on the product's key pages (homepage, signup, main dashboard, the specific flow being studied)
-- OR ask the user to provide screenshots: "Can you capture 10-15 screenshots walking through [the focus area / the core product flow]? Save them to `~/pm-skills/projects/<product-name>/ui-screenshots/` numbered sequentially (e.g., `01-landing.png`, `02-signup.png`, etc.)"
-- If the product is a mobile app, ask the user to screen-record or screenshot the key flow
+#### Pre-Check: Claude in Chrome Connection
 
-**Step 2: Sequential Journey Analysis**
-For each screenshot (in order), document:
+**This is a required step.** Before starting the walkthrough, verify Claude in Chrome is available:
+
+1. Run `mcp__Claude_in_Chrome__list_connected_browsers` to check for an active browser connection.
+2. **If a browser is connected:** Proceed to the live walkthrough below.
+3. **If no browser is connected:** Prompt the user:
+
+```
+⚠️ Claude in Chrome is required for the live product walkthrough.
+
+To proceed, please:
+1. Install the "Claude in Chrome" extension from the Chrome Web Store (if not already installed)
+2. Open Chrome and click the Claude in Chrome extension icon
+3. Make sure it shows "Connected" status
+
+Once activated, say "ready" and I'll continue the walkthrough.
+
+(If you can't install the extension right now, say "skip" and I'll fall back to screenshot-based analysis — but the live walkthrough produces significantly better research.)
+```
+
+**Wait for the user to confirm.** Do not proceed until the user says "ready" or "skip".
+
+#### Option A (Primary): Live Browser Walkthrough via Claude in Chrome
+
+Walk through the product as a real user would, step by step:
+
+**Step 1: Navigate to the product**
+- Use `mcp__Claude_in_Chrome__navigate` to open the product's homepage
+- Use `mcp__Claude_in_Chrome__read_page` to capture the initial state
+
+**Step 2: Walk through the core user journey**
+For the focus area identified in Step 2 (or the default onboarding → first value flow):
+- Navigate each step of the flow using `navigate`, `computer` (for clicks/interactions), and `find` (for locating elements)
+- At each step, use `read_page` to capture the current page state
+- Use `get_page_text` to extract copy, microcopy, and error messages verbatim
+- If the flow requires signup/login, ask the user to complete authentication, then continue
+
+**Step 3: Document each screen in sequence**
+For each step in the journey, document:
 - **What screen is this?** (name and purpose)
 - **What works well?** (clear UI, good copy, smart defaults)
 - **What's confusing or broken?** (unclear CTAs, empty states, errors, missing guidance)
 - **What's the user's emotional state here?** (confident, lost, frustrated, delighted)
+- **Actual copy observed** — quote exact button labels, headings, error messages, and onboarding prompts
 
-**Step 3: Journey Map Output**
+**Step 4: Test edge cases and failure states**
+- Try submitting empty forms, clicking disabled elements, navigating back
+- Look for missing empty states, unclear error messages, dead-end flows
+- Note any elements that don't respond or behave unexpectedly
+
+#### Option B (Fallback): Screenshot-Based Analysis
+
+Only use this if the user explicitly chose "skip" during the pre-check.
+
+- Use `firecrawl_scrape` with `formats: ["screenshot"]` on the product's key pages (homepage, signup, main dashboard, the specific flow being studied)
+- OR ask the user to provide screenshots: "Can you capture 10-15 screenshots walking through [the focus area / the core product flow]? Save them to `~/pm-skills/projects/<product-name>/ui-screenshots/` numbered sequentially (e.g., `01-landing.png`, `02-signup.png`, etc.)"
+- If the product is a mobile app, ask the user to screen-record or screenshot the key flow
+
+#### Journey Map Output (Both Options)
+
 Create a journey map table:
 
 | Step | Screen | What Happens | Works Well | Friction / Issues | User Emotion |
@@ -93,7 +141,7 @@ Create a journey map table:
 
 Save as part of the research brief (Section: "Current Product Walkthrough").
 
-**Key insight:** This step often reveals broken features, misleading UI, and real friction that no amount of web research or review reading can surface. In the Creatify project, this step revealed that the URL import feature was completely broken — a critical finding that shaped the entire redesign.
+**Key insight:** This step often reveals broken features, misleading UI, and real friction that no amount of web research or review reading can surface. In the Creatify project, this step revealed that the URL import feature was completely broken — a critical finding that shaped the entire redesign. Live browser testing catches issues that static screenshots miss: broken interactions, slow loads, confusing navigation flows, and JS-dependent features that fail silently.
 
 ### 4b. Fetch User Reviews
 Run the review scraper script:
@@ -304,9 +352,12 @@ Research complete. Run `/pm-design <product-name>` to start the design phase.
 - Design tokens extracted if screenshots available
 - Clear, actionable opportunity areas identified
 - **Product Walkthrough Audit must include:**
+  - Claude in Chrome pre-check (connection verified or user explicitly skipped)
+  - Live browser walkthrough preferred; screenshot fallback only if user opted out
   - Sequential journey map of actual product screens
   - Specific friction points and broken features identified
   - User emotional state mapped across the journey
+  - Actual UI copy quoted verbatim (button labels, headings, error messages)
 - **Competitive Flow Teardown must include:**
   - Same flow/feature compared across 3+ competitors
   - Patterns identified (table stakes, differentiators, opportunity gaps)

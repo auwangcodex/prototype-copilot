@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canvas Copilot — AI-Powered LMS Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --color-primary: #0374B5;
+    --color-primary-dark: #025D91;
+    --color-on-primary: #FFFFFF;
+    --color-secondary: #394B58;
+    --color-ai-accent: #7C3AED;
+    --color-ai-accent-light: #EDE9FE;
+    --color-background: #F5F5F5;
+    --color-surface: #FFFFFF;
+    --color-foreground: #2D3B45;
+    --color-muted: #6B7780;
+    --color-border: #E8E8E8;
+    --color-success: #0B874B;
+    --color-warning: #FC5E13;
+    --color-destructive: #EE0612;
+    --color-hbs: #A51C30;
+  }
+  body {
+    font-family: 'Lato', -apple-system, sans-serif;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 60px;
+    background: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .sidebar-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--color-hbs);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.1;
+    text-align: center;
+  }
+  .sidebar-item {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.6);
+    font-size: 9px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 150ms;
+    gap: 2px;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.1); color: white; }
+  .sidebar-item.active { background: rgba(255,255,255,0.15); color: white; }
+  .sidebar-item svg { width: 20px; height: 20px; }
+  .sidebar-item span { font-size: 9px; }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .header {
+    height: 56px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-foreground);
+  }
+  .header-ai-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-ai-accent);
+    background: var(--color-ai-accent-light);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    position: relative;
+  }
+  .header-icon:hover { background: var(--color-background); }
+  .header-icon svg { width: 20px; height: 20px; }
+  .notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: var(--color-destructive);
+    color: white;
+    border-radius: 50%;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Content area */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Briefing section */
+  .briefing {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .briefing-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .briefing-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .briefing-time {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .briefing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .briefing-card {
+    background: var(--color-surface);
+    border-radius: 8px;
+    padding: 14px 16px;
+    border-left: 4px solid;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: all 150ms;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .briefing-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); transform: translateY(-1px); }
+  .briefing-card.urgent { border-left-color: var(--color-destructive); }
+  .briefing-card.warning { border-left-color: var(--color-warning); }
+  .briefing-card.upcoming { border-left-color: var(--color-primary); }
+  .briefing-card.announcement { border-left-color: var(--color-ai-accent); }
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .course-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: white;
+  }
+  .badge-dsail { background: #2D6987; }
+  .badge-rchq { background: #8B6914; }
+  .badge-cap { background: #6B4C2A; }
+  .badge-bgie { background: #3B5998; }
+  .badge-lca { background: #8B4513; }
+  .card-status {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .status-not-submitted { color: var(--color-destructive); }
+  .status-due-soon { color: var(--color-warning); }
+  .status-upcoming { color: var(--color-primary); }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+  .card-meta {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+
+  /* Chat section */
+  .chat-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .chat-input-wrapper {
+    position: relative;
+    background: var(--color-surface);
+    border-radius: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 2px solid var(--color-border);
+    transition: border-color 200ms;
+  }
+  .chat-input-wrapper:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 12px rgba(3,116,181,0.15);
+  }
+  .chat-input {
+    width: 100%;
+    padding: 14px 52px 14px 20px;
+    border: none;
+    outline: none;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    background: transparent;
+    color: var(--color-foreground);
+    border-radius: 24px;
+  }
+  .chat-input::placeholder { color: #B0B8BF; }
+  .chat-send {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 150ms;
+  }
+  .chat-send:hover { background: var(--color-primary-dark); }
+  .chat-send svg { width: 18px; height: 18px; color: white; }
+
+  /* Suggested chips */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 13px;
+    color: var(--color-foreground);
+    cursor: pointer;
+    transition: all 150ms;
+    font-family: 'Lato', sans-serif;
+  }
+  .chip:hover {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+
+  /* Chat messages */
+  .chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 20px;
+  }
+  .message {
+    display: flex;
+    gap: 10px;
+    max-width: 85%;
+    animation: fadeInUp 300ms ease-out;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+  .message-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .message.ai .message-avatar {
+    background: var(--color-ai-accent);
+    color: white;
+  }
+  .message.user .message-avatar {
+    background: var(--color-primary);
+    color: white;
+  }
+  .message-bubble {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .message.ai .message-bubble {
+    background: var(--color-ai-accent-light);
+    color: var(--color-foreground);
+    border-top-left-radius: 4px;
+  }
+  .message.user .message-bubble {
+    background: var(--color-primary);
+    color: white;
+    border-top-right-radius: 4px;
+  }
+  .message-bubble a {
+    color: var(--color-primary-dark);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .message-bubble a:hover { text-decoration: underline; }
+  .message.user .message-bubble a { color: rgba(255,255,255,0.9); text-decoration: underline; }
+  .message-bubble .source-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--color-muted);
+    background: rgba(0,0,0,0.04);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .message-bubble strong { font-weight: 600; }
+  .message-bubble ul, .message-bubble ol {
+    margin: 6px 0;
+    padding-left: 18px;
+  }
+  .message-bubble li { margin-bottom: 4px; }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+    align-items: center;
+  }
+  .typing-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-ai-accent);
+    opacity: 0.4;
+    animation: typingPulse 1.2s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingPulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Demo controls */
+  .demo-bar {
+    position: fixed;
+    bottom: 0;
+    left: 60px;
+    right: 0;
+    background: var(--color-secondary);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 100;
+  }
+  .demo-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  .demo-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    font-size: 12px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms;
+  }
+  .demo-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+  .demo-btn.active { background: var(--color-primary); border-color: var(--color-primary); color: white; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-logo">HBS</div>
+  <div class="sidebar-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </div>
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    <span>Courses</span>
+  </div>
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Calendar</span>
+  </div>
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    <span>Inbox</span>
+  </div>
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    <span>Help</span>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <span class="header-title">Canvas Copilot</span>
+      <span class="header-ai-badge">AI Assistant</span>
+    </div>
+    <div class="header-right">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="notif-badge">3</span>
+      </div>
+      <div class="avatar">AW</div>
+    </div>
+  </header>
+
+  <!-- Scrollable content -->
+  <div class="content" id="content">
+
+    <!-- Proactive Briefing -->
+    <section class="briefing" id="briefing">
+      <div class="briefing-header">
+        <span class="briefing-title">Priority Briefing</span>
+        <span class="briefing-time">Monday, April 28 — 10:30 PM</span>
+      </div>
+      <div class="briefing-cards">
+        <div class="briefing-card urgent">
+          <div class="card-top">
+            <span class="course-badge badge-bgie">BGIE</span>
+            <span class="card-status status-not-submitted">Due today</span>
+          </div>
+          <div class="card-title">Final Exam Guidelines</div>
+          <div class="card-meta">Due 8:30 AM — Assignment</div>
+        </div>
+        <div class="briefing-card warning">
+          <div class="card-top">
+            <span class="course-badge badge-dsail">DSAIL</span>
+            <span class="card-status status-due-soon">Due tomorrow</span>
+          </div>
+          <div class="card-title">Final Project Submission</div>
+          <div class="card-meta">Due Apr 29, 5:00 PM — Not submitted</div>
+        </div>
+        <div class="briefing-card warning">
+          <div class="card-top">
+            <span class="course-badge badge-rchq">RCHQ</span>
+            <span class="card-status status-due-soon">Due tomorrow</span>
+          </div>
+          <div class="card-title">RC Final Reflections — Note to EC Self</div>
+          <div class="card-meta">Due Apr 29, 11:59 PM</div>
+        </div>
+        <div class="briefing-card upcoming">
+          <div class="card-top">
+            <span class="course-badge badge-cap">CAP</span>
+            <span class="card-status status-upcoming">Thursday</span>
+          </div>
+          <div class="card-title">Faculty/Team Meetings</div>
+          <div class="card-meta">Apr 30, 8:33 PM — Individual times vary</div>
+        </div>
+        <div class="briefing-card announcement">
+          <div class="card-top">
+            <span class="course-badge badge-lca">LCA</span>
+            <span class="card-status" style="color:var(--color-ai-accent)">New today</span>
+          </div>
+          <div class="card-title">Download Course Files + Final Exam Tips</div>
+          <div class="card-meta">2 announcements posted at 2:15 PM & 3:15 PM</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat section -->
+    <section class="chat-section">
+      <div class="chat-input-wrapper">
+        <input class="chat-input" id="chatInput" type="text" placeholder="Ask anything about your courses..." />
+        <button class="chat-send" id="sendBtn" onclick="handleSend()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="chips" id="chips">
+        <button class="chip" onclick="handleChip('What\'s due this week?')">What's due this week?</button>
+        <button class="chip" onclick="handleChip('Give me the DSAIL final project requirements')">DSAIL final project requirements</button>
+        <button class="chip" onclick="handleChip('What did I miss since last Friday?')">What did I miss since Friday?</button>
+        <button class="chip" onclick="handleChip('How is LCA organized?')">How is LCA organized?</button>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+    </section>
+  </div>
+</div>
+
+<!-- Demo controls -->
+<div class="demo-bar">
+  <span class="demo-label">Demo Scenarios</span>
+  <button class="demo-btn active" onclick="resetDemo(this)">Home</button>
+  <button class="demo-btn" onclick="runScenario('file', this)">1: Find File</button>
+  <button class="demo-btn" onclick="runScenario('orientation', this)">2: Course Orientation</button>
+  <button class="demo-btn" onclick="runScenario('catchup', this)">3: Catch-Up</button>
+  <button class="demo-btn" onclick="runScenario('week', this)">4: Weekly View</button>
+</div>
+
+<script>
+const responses = {
+  file: {
+    user: "Give me the DSAIL final project requirements",
+    ai: `The DSAIL final project instructions are in the <strong>Exam Tool</strong>:<br><br>
+<a href="#">📄 Final Project — Exam Tool (DSAIL)</a><br><br>
+<strong>Key details:</strong>
+<ul>
+<li>Submit your <strong>build project</strong>, answers to <strong>3 reflection questions</strong>, and any appendices</li>
+<li>Submit as <strong>one PDF</strong> via the Exam Tool</li>
+<li><strong>Due: April 29 at 5:00 PM</strong></li>
+<li>Not a timed project — you can submit anytime between April 23 and the deadline</li>
+</ul>
+<span class="source-tag">Source: DSAIL > Assignments > Final Project Submission</span>`
+  },
+  orientation: {
+    user: "How is LCA organized? Where do I find readings?",
+    ai: `LCA is organized by <strong>Modules</strong>, grouped by stakeholder theme:<br><br>
+<strong>Introduction</strong> (Classes 1–8): Investors<br>
+&nbsp;&nbsp;Antegren, Fiduciaries, Rajat Gupta, Enron, Theranos, TXU, Unilever<br><br>
+<strong>Module 2</strong> (Classes 9–14): Customers<br>
+&nbsp;&nbsp;Maggi Noodles, JUUL, Buy Now Pay Later, and more<br><br>
+<strong>Module 3</strong> (Classes 15+): Employees<br>
+&nbsp;&nbsp;Intuit/TurboTax, Target, BP, and more<br><br>
+<strong>To find readings:</strong> Click into each Module — case prep materials and readings are linked within each class entry. The <a href="#">Syllabus tab</a> has the full schedule with all dates.<br><br>
+<span class="source-tag">Source: LCA > Modules</span>`
+  },
+  catchup: {
+    user: "What did I miss since last Friday?",
+    ai: `Here's everything new across your courses since <strong>Friday, April 25</strong>:<br><br>
+<strong>🔴 Action Required:</strong>
+<ul>
+<li><strong>BGIE</strong> — Final Exam Guidelines posted, due <strong>today 8:30 AM</strong></li>
+<li><strong>DSAIL</strong> — Final Project Submission due <strong>tomorrow 5:00 PM</strong> (not yet submitted)</li>
+<li><strong>RCHQ</strong> — Final Reflections due <strong>tomorrow 11:59 PM</strong></li>
+</ul>
+<strong>📢 New Announcements:</strong>
+<ul>
+<li><strong>LCA</strong> — "Download Course Files" (2:15 PM today) + "Final Exam Tips and EC Course Slide Decks" (3:15 PM today)</li>
+<li><strong>DSAIL</strong> — "DSAIL Class Tomorrow - Batten 304" (Apr 15)</li>
+</ul>
+<strong>📁 New Files:</strong>
+<ul>
+<li><strong>DSAIL</strong> — "Final Class I.pdf" uploaded yesterday</li>
+</ul>
+<strong>✅ No updates from:</strong> FIN2, PURPOSE, TEM<br><br>
+<span class="source-tag">Scanned 8 courses · 3 days of activity</span>`
+  },
+  week: {
+    user: "What's due this week?",
+    ai: `Here's your week at a glance:<br><br>
+<strong>Monday, Apr 28 (today):</strong>
+<ul><li>🔴 BGIE — Final Exam Guidelines (8:30 AM)</li></ul>
+<strong>Tuesday, Apr 29:</strong>
+<ul>
+<li>🔴 DSAIL — Final Project Submission (5:00 PM) — <em>not submitted</em></li>
+<li>🟡 RCHQ — RC Final Reflections (11:59 PM)</li>
+</ul>
+<strong>Wednesday, Apr 30:</strong>
+<ul><li>🔵 CAP — Faculty/Team Meetings (8:33 PM)</li></ul>
+<strong>Thursday, May 1:</strong>
+<ul><li>🔵 CAP — Faculty/Team Meetings (8:33 PM)</li></ul>
+<strong>Friday–Sunday:</strong>
+<ul><li>Nothing scheduled yet</li></ul>
+<br>
+<strong>⚡ Priority:</strong> Your DSAIL Final Project is due tomorrow and isn't submitted yet. Need help finding the requirements?<br><br>
+<span class="source-tag">Aggregated from 8 course calendars</span>`
+  }
+};
+
+function addMessage(type, content) {
+  const messages = document.getElementById('chatMessages');
+  const msg = document.createElement('div');
+  msg.className = `message ${type}`;
+  msg.innerHTML = `
+    <div class="message-avatar">${type === 'ai' ? 'AI' : 'AW'}</div>
+    <div class="message-bubble">${content}</div>
+  `;
+  messages.appendChild(msg);
+  scrollToBottom();
+}
+
+function addTypingIndicator() {
+  const messages = document.getElementById('chatMessages');
+  const indicator = document.createElement('div');
+  indicator.className = 'message ai';
+  indicator.id = 'typingIndicator';
+  indicator.innerHTML = `
+    <div class="message-avatar">AI</div>
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  `;
+  messages.appendChild(indicator);
+  scrollToBottom();
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function scrollToBottom() {
+  const content = document.getElementById('content');
+  setTimeout(() => content.scrollTop = content.scrollHeight, 50);
+}
+
+function runScenario(key, el) {
+  // Update demo buttons
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  // Clear previous messages
+  document.getElementById('chatMessages').innerHTML = '';
+
+  const scenario = responses[key];
+  if (!scenario) return;
+
+  // Hide chips
+  document.getElementById('chips').classList.add('hidden');
+
+  // Add user message
+  addMessage('user', scenario.user);
+
+  // Show typing indicator
+  setTimeout(() => {
+    addTypingIndicator();
+    // Show AI response after delay
+    setTimeout(() => {
+      removeTypingIndicator();
+      addMessage('ai', scenario.ai);
+    }, 1200);
+  }, 400);
+}
+
+function handleChip(text) {
+  document.getElementById('chatInput').value = '';
+  document.getElementById('chips').classList.add('hidden');
+
+  // Map chip text to scenario
+  let key = 'week';
+  if (text.includes('DSAIL')) key = 'file';
+  else if (text.includes('miss')) key = 'catchup';
+  else if (text.includes('LCA')) key = 'orientation';
+  else if (text.includes('due')) key = 'week';
+
+  // Update demo buttons
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+
+  addMessage('user', text);
+  setTimeout(() => {
+    addTypingIndicator();
+    setTimeout(() => {
+      removeTypingIndicator();
+      addMessage('ai', responses[key].ai);
+    }, 1200);
+  }, 400);
+}
+
+function handleSend() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  document.getElementById('chips').classList.add('hidden');
+
+  addMessage('user', text);
+
+  // Try to match to a scenario
+  const lower = text.toLowerCase();
+  let key = null;
+  if (lower.includes('dsail') || lower.includes('final project') || lower.includes('requirement')) key = 'file';
+  else if (lower.includes('lca') || lower.includes('organized') || lower.includes('reading')) key = 'orientation';
+  else if (lower.includes('miss') || lower.includes('catch up') || lower.includes('since')) key = 'catchup';
+  else if (lower.includes('due') || lower.includes('week') || lower.includes('deadline')) key = 'week';
+
+  setTimeout(() => {
+    addTypingIndicator();
+    setTimeout(() => {
+      removeTypingIndicator();
+      if (key && responses[key]) {
+        addMessage('ai', responses[key].ai);
+      } else {
+        addMessage('ai', `I'd search across your 8 enrolled courses for "<strong>${text}</strong>". In the full version, I'd index all files, pages, assignments, announcements, and syllabi to find the best match.<br><br><em>This is a prototype — try one of the demo scenarios to see a full response.</em>`);
+      }
+    }, 1200);
+  }, 400);
+}
+
+function resetDemo(el) {
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('chips').classList.remove('hidden');
+  document.getElementById('content').scrollTop = 0;
+}
+
+// Enter key handler
+document.getElementById('chatInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleSend();
+});
+</script>
+
+</body>
+</html>

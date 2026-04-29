@@ -217,286 +217,200 @@ Extract the following from loaded artifacts:
 
 ## FORMAT: LOVABLE
 
-**Purpose:** Detailed build prompt for Lovable.dev (AI-powered app builder).
+**Purpose:** Research-grounded build specification for Lovable.dev (AI-powered app builder). Unlike a generic prompt, this spec feeds verified product data, real user scenarios, and tested design decisions into Lovable — producing output that's accurate and product-aware, not just plausible-looking.
+
+**Key Principle:** The Lovable prompt must include **verified data from the research phase** (real user data, actual product structure, confirmed pain points) so that Lovable builds with facts rather than hallucinating plausible content. This is our pipeline's core advantage.
 
 **Structure (Specification Document):**
 
 **Header:**
 ```
-# [Product Name] - [Persona Name] Prototype
-Build Specification for Lovable.dev
+# [Product Name] - Build Specification for Lovable.dev
 
 Project: [Project Name]
 Generated: [Current Date]
-Based on: [List source artifacts]
+Based on: Research Brief, PM Synthesis, Design Spec, Persona Spec, Design Tokens
 ```
 
-**Section 1: Product Overview (100-150 words):**
-- What this app does (user perspective)
-- Core value proposition
-- Primary user goal
-- Key behavioral framework applied
+**Section 1: Product Overview & Research Context (200-300 words)**
+
+Provide the WHY, not just the WHAT. Lovable builds better when it understands the problem:
+
+- What this app does (user perspective, one sentence)
+- The core problem it solves (from research brief — specific, evidence-backed)
+- Key research findings that shaped the design (2-3 bullet points from PM synthesis)
+- Behavioral framework applied and why (from design spec)
+- Target user (from persona — demographics, context, primary goal)
+- Competitive context (what exists today, why it's insufficient — from competitive analysis)
 
 **Section 2: Design System (STRICT REQUIREMENTS)**
 
-**If design-tokens.md exists:**
+**If design-tokens.md exists, transcribe exact values:**
 ```
-## Design System - EXACT SPECIFICATIONS
-
+## Design System — EXACT SPECIFICATIONS
 These values MUST be used exactly as specified. Do not deviate.
 
 ### Colors
-- Primary: #[hex] - [usage: buttons, active states]
-- Secondary: #[hex] - [usage: backgrounds, secondary CTAs]
-- Accent: #[hex] - [usage: alerts, highlights]
-- Background: #[hex] - [usage: main background]
-- Surface: #[hex] - [usage: cards, elevated components]
-- Text Primary: #[hex]
-- Text Secondary: #[hex]
-- Success: #[hex]
-- Warning: #[hex]
-- Error: #[hex]
+[Transcribe full color palette from design-tokens.md with hex values, CSS variable names, and usage notes]
 
 ### Typography
-- Font Family: [exact font name]
-- Headings: [size/weight for h1, h2, h3]
-- Body: [size/weight for normal text]
-- Labels: [size/weight for UI labels]
-- Captions: [size/weight for small text]
+[Transcribe font families, size scale, weights, and usage from design-tokens.md]
 
 ### Spacing Scale
-- Base unit: [4px or 8px]
-- Scale: [e.g., 4, 8, 12, 16, 24, 32, 48, 64]
-- Component padding: [standard padding for cards, buttons]
-- Section margins: [vertical spacing between sections]
+[Transcribe spacing system from design-tokens.md]
 
-### Components
-- Border radius: [px value for buttons, cards, inputs]
-- Button height: [min height]
-- Input height: [standard height]
-- Shadow: [box-shadow values for elevation levels]
-- Icon size: [standard sizes: small, medium, large]
+### Component Patterns
+[Transcribe component-specific styles: border radius, shadows, button styles, card styles, input styles from design-tokens.md]
+
+### Animation Guidelines
+[Transcribe motion/animation rules from design-tokens.md]
+
+### Anti-Patterns
+[Transcribe "avoid" list from design-tokens.md]
 ```
 
 **If no design tokens:**
 ```
-## Design System - FLEXIBLE GUIDELINES
-
-Use your best judgment with modern iOS-style design:
-- Clean, minimal aesthetic
-- Ample whitespace
-- Rounded corners (8-12px)
-- Subtle shadows for depth
-- Sans-serif system fonts
-- Accessible color contrast (WCAG AA minimum)
+## Design System — FLEXIBLE GUIDELINES
+Use modern, clean design with accessible color contrast (WCAG AA minimum).
 ```
 
 **Section 3: Layout & Information Architecture**
 
-**Specify the selected layout variant:**
+Specify the layout from the design spec, adapted for the product type:
+
 ```
-## Layout: [Goal-Centric / Coach-First / Activity Stream]
+## Layout Structure
 
-### Screen Structure
-[Describe the layout hierarchy from top to bottom]
+### Screen Hierarchy
+[Describe zones from top to bottom / left to right, with sizing]
+[Reference the persona's dashboard layout section if it exists]
 
-Example:
-1. Goal Banner (top 20% of screen)
-   - Gradient background
-   - Goal statement centered
-   - Target date or milestone
+### Navigation Pattern
+[Describe primary navigation: sidebar, tabs, bottom bar, etc.]
+[Specify which nav items are functional vs placeholder for prototype]
 
-2. Progress Rings (middle section)
-   - 3 circular gauges in grid layout
-   - Each labeled with metric name
-   - Percentage and trend arrow
-
-3. Coach Section
-   - Coach card with avatar
-   - Message text (2-3 lines)
-   - "View Game Plan" button
-   - Game plan timeline (collapsible)
-
-4. Action Buttons (bottom area)
-   - Primary: "Log Meal"
-   - Secondary: "Add Photo"
-   - Tertiary: "Voice Input"
-
-5. Bottom Navigation
-   - Home, Log, Coach, Profile icons
+### Content Priority
+[What the user sees FIRST — this comes from the behavioral framework]
+[What requires interaction to access]
+[What is available but secondary]
 ```
 
-**Section 4: Features & Interactions (DETAILED REQUIREMENTS)**
+**Section 4: Features & Interactions (DETAILED)**
 
-**For each core feature, specify:**
+**For each feature from the design spec's "Must Have" and "Should Have" lists:**
 
-**Format:**
 ```
 ### Feature: [Feature Name]
 
-**User Goal:** [What user wants to accomplish]
+**User Story:** As [persona name], I want to [action] so that [benefit].
+(Ground this in the persona spec's scenarios)
 
-**Trigger:** [How user initiates - button, gesture, auto]
+**Trigger:** [How user initiates — button click, page load, typed query, etc.]
 
 **Flow:**
-1. [Step 1 with UI state]
-2. [Step 2 with UI state]
-3. [Step 3 with UI state]
-4. [Completion state]
+1. [Step with UI state description]
+2. [Step with UI state description]
+3. [Completion state]
 
 **UI Requirements:**
-- [Specific components needed]
-- [Layout constraints]
-- [Interactive elements]
+- [Specific components, layout constraints, interactive elements]
 
-**Copy/Content:**
-- [Button labels]
-- [Placeholder text]
-- [Coach messages (use exact examples from persona spec)]
+**Copy/Content (EXACT — from persona spec or research):**
+- [Button labels, placeholder text, headings — use verified copy, not generic]
+- [AI/assistant responses — use exact sample dialogue from persona spec]
 
-**Validation/Error Handling:**
-- [What to validate]
-- [Error messages]
-- [Edge cases]
+**Edge Cases:**
+- [What happens on empty state, error, unexpected input]
 ```
 
-**Required Features to Specify:**
+**Section 5: AI/Assistant Personality & System Prompt**
 
-1. **Goal Setting & Progress Display**
-2. **Meal Logging Flow** (3 stages)
-3. **Photo Capture/Upload**
-4. **Voice Input** (4 states)
-5. **Coach Messages** (contextual feedback)
-6. **Game Plan Timeline**
-7. **Coach Chat Interface** (full-screen overlay)
-8. **Journal/Log History**
-9. **Profile/Settings** (basic)
-
-**Section 5: Coach Personality & Messaging**
+**This section is critical — it prevents Lovable from generating a generic chatbot.**
 
 ```
-## Coach Persona: [Coach Name]
+## AI Assistant Configuration
 
-**Personality Traits:** [List 4-5 traits from persona spec]
+### Personality
+[Transcribe from persona spec: archetype, tone, communication style]
 
-**Communication Style:**
-- Tone: [warm/analytical/energetic/etc.]
-- Language: [casual/professional/technical/etc.]
-- Emoji use: [frequent/occasional/none]
-- Message length: [concise/detailed]
+### System Prompt (EXACT — paste this into the AI configuration)
+[Write a complete system prompt that includes:]
 
-**Example Messages:**
-[Include 8-10 specific example messages from persona spec]
-- Onboarding: "[message]"
-- After meal log: "[message]"
-- Progress milestone: "[message]"
-- Low engagement: "[message]"
-- Goal achievement: "[message]"
-- Setback/miss: "[message]"
+1. Role and personality definition
+2. VERIFIED DATA from research:
+   - Real user/course/product data discovered during walkthrough
+   - Actual structure, names, dates, and relationships observed
+   - Specific details that were confirmed (not assumed)
+3. Response format instructions
+4. Example Q&A pairs from persona spec's sample dialogue
+5. Boundaries (what the AI should NOT do)
 
-**Messaging Rules:**
-- Always [specific behavior]
-- Never [specific behavior]
-- When [condition], say [message type]
+### Pre-Built Responses (for demo reliability)
+[For prototype/demo purposes, include 3-5 pre-scripted Q&A pairs that use verified data. These ensure the demo always works even if the AI model hallucinates.]
+
+Pair 1:
+- User: "[exact query from persona scenario]"
+- AI: "[exact response from persona spec — with verified data]"
+
+Pair 2: ...
 ```
 
-**Section 6: Data Model & State Management**
+**Section 6: Data Model & Demo Data**
 
 ```
 ## Data Structure
 
-### User Profile
-- name: string
-- goal: string
-- targetDate: date
-- preferences: object
+### Core Entities
+[Define data model based on the product — NOT a generic template]
+[Pull entity names and relationships from research brief's "Data Model" section]
 
-### Daily Log Entry
-- id: uuid
-- timestamp: datetime
-- type: 'meal' | 'photo' | 'note'
-- content: string
-- imageUrl?: string
-- tags: string[]
-- coachFeedback?: string
+### Demo Data (VERIFIED — from research walkthrough)
+[Populate with REAL data observed during the product walkthrough]
+[This is what makes the demo credible vs generic]
 
-### Progress Metrics
-- metricName: string
-- currentValue: number
-- targetValue: number
-- unit: string
-- trend: 'up' | 'down' | 'stable'
-- goalRelevance: string
-
-### Game Plan Item
-- id: uuid
-- title: string
-- description: string
-- dueTime: time
-- status: 'pending' | 'complete' | 'skipped'
-- icon: string
+Example entries:
+[Provide 5-10 realistic data entries with real names, dates, content from research]
 ```
 
-**Section 7: Mobile Responsiveness**
+**Section 7: Responsive Design**
 
 ```
-## Device Constraints
-- Primary target: iPhone (390px - 414px width)
-- Touch targets: Minimum 44px height/width
-- Font sizes: Minimum 16px for body text
-- Scrollable areas: Clearly indicated
-- Bottom navigation: Fixed/sticky position
+## Device Targets
+- Primary: [Desktop / Mobile / Tablet — based on product context]
+- Breakpoints: [specific px values if defined in design tokens]
+- Touch targets: Minimum 44px
+- Font minimum: 16px body text on mobile
 ```
 
-**Section 8: Demo Data & Initial State**
+**Section 8: Out of Scope (v1)**
 
 ```
-## Prepopulate for Demo
-
-### User Profile
-[Specify exact demo user details]
-
-### Sample Log Entries
-[Provide 5-7 realistic log entries with timestamps]
-
-### Sample Coach Messages
-[Provide 3-5 messages for demo chat]
-
-### Initial Progress Values
-[Provide starting metric values]
+## Not Required for Prototype
+[List features from the design spec's "Won't Have" section]
+[List any research-identified features that are future enhancements]
+- [Feature]: [Why it's deferred — reference research or design rationale]
 ```
 
-**Section 9: Out of Scope (for v1)**
-
-```
-## Not Required for Initial Build
-- Backend/database integration (use local state)
-- User authentication
-- Push notifications
-- Advanced analytics
-- Social sharing
-- Multi-user support
-- [Any other features from research that aren't in MVP]
-```
-
-**Section 10: Success Criteria**
+**Section 9: Success Criteria**
 
 ```
 ## Prototype is Complete When:
-- All 7 core features are interactive
-- Coach personality is evident in all messages
+[Pull from design spec's success criteria]
+[Add product-specific quality checks]
+- Demo data makes the experience feel real (not lorem ipsum)
+- AI responses use verified data (not hallucinated content)
 - Design system is consistently applied
-- Layout matches specified variant
-- Flows are smooth (no broken states)
-- Mobile-optimized (looks good on iPhone)
-- Demo data makes the experience feel real
+- All "Must Have" features are interactive
+- [Product-specific criteria from persona success section]
 ```
 
-**Tone for Lovable Prompt:**
-- Extremely specific and prescriptive for design system
-- Flexible and empowering for implementation details
-- Clear about must-haves vs nice-to-haves
-- Includes rationale for key decisions (helps AI understand intent)
+**Quality Rules for Lovable Prompt Generation:**
+- Every piece of content (course names, deadlines, file names, user data) must come from verified research artifacts — NEVER invent plausible-sounding data
+- The system prompt section must include real product data discovered during the walkthrough — this is the single biggest quality differentiator vs. a generic Lovable prompt
+- Pre-built demo responses must match the persona's sample dialogue exactly
+- Design tokens must be transcribed precisely from design-tokens.md
+- Feature specs must reference the behavioral framework to explain WHY each feature exists
 
 **Save as:** `~/pm-skills/projects/<project-name>/deliverables/lovable_build_prompt.md`
 
