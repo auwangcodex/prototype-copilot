@@ -4,40 +4,58 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prototype Co-Pilot — Research-Driven Prototyping with Claude Code</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --bg: #0A0A0B;
-    --surface: #141416;
-    --surface-2: #1C1C20;
-    --border: #2A2A2F;
-    --text: #E8E8EC;
-    --text-muted: #8B8B96;
-    --accent: #7C3AED;
-    --accent-light: #A78BFA;
-    --accent-bg: rgba(124,58,237,0.08);
-    --green: #10B981;
-    --orange: #F59E0B;
-    --blue: #3B82F6;
-    --red: #EF4444;
+    --bg: #FFFAEF;
+    --bg-alt: #FFF5DC;
+    --surface: #FFFFFF;
+    --text: #141111;
+    --text-muted: #5A5555;
+    --pink: #FE7DA8;
+    --pink-light: #FFD6E4;
+    --tiffany: #0ABAB5;
+    --tiffany-light: #C6F7F5;
+    --yellow: #FFD440;
+    --yellow-light: #FFF0B8;
+    --blue: #7DC4FE;
+    --blue-light: #D6EDFF;
+    --green: #7DFE9E;
+    --green-light: #D6FFE2;
+    --purple: #B07DFE;
+    --purple-light: #E8D6FF;
+    --border: #141111;
+    --shadow: #141111;
   }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
+    font-size: 18px;
   }
-  code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Pixel shadow utility */
+  .pixel-shadow {
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0px 0px var(--shadow);
+  }
+  .pixel-shadow:hover {
+    box-shadow: 6px 6px 0px 0px var(--shadow);
+    transform: translate(-1px, -1px);
+  }
+  .pixel-shadow:active {
+    box-shadow: 2px 2px 0px 0px var(--shadow);
+    transform: translate(1px, 1px);
+  }
 
   /* Nav */
   .nav {
     position: fixed; top: 0; left: 0; right: 0;
-    background: rgba(10,10,11,0.85);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    border-bottom: 2px solid var(--border);
     z-index: 100;
     padding: 0 24px;
   }
@@ -50,56 +68,68 @@
     height: 60px;
   }
   .nav-brand {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--text);
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 10px;
     text-decoration: none;
   }
   .nav-brand .icon {
-    width: 28px; height: 28px;
-    background: var(--accent);
-    border-radius: 6px;
+    width: 32px; height: 32px;
+    background: var(--yellow);
+    border: 2px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 2px 2px 0px 0px var(--shadow);
   }
   .nav-links { display: flex; gap: 28px; }
   .nav-links a {
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
     transition: color 150ms;
   }
   .nav-links a:hover { color: var(--text); }
   .nav-cta {
-    padding: 8px 16px;
-    background: var(--accent);
-    color: white;
-    border-radius: 8px;
+    padding: 8px 18px;
+    background: var(--pink);
+    color: var(--text);
     text-decoration: none;
-    font-size: 13px;
     font-weight: 600;
-    transition: opacity 150ms;
+    font-size: 14px;
+    border: 2px solid var(--border);
+    box-shadow: 3px 3px 0px 0px var(--shadow);
+    transition: all 100ms;
   }
-  .nav-cta:hover { opacity: 0.9; }
+  .nav-cta:hover { box-shadow: 4px 4px 0px 0px var(--shadow); transform: translate(-1px,-1px); }
+  .nav-cta:active { box-shadow: 1px 1px 0px 0px var(--shadow); transform: translate(1px,1px); }
 
   /* Sections */
-  section { padding: 100px 24px; }
+  section { padding: 80px 24px; }
   .container { max-width: 1100px; margin: 0 auto; }
   .section-label {
-    font-size: 12px;
+    display: inline-block;
+    font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--accent-light);
-    margin-bottom: 12px;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+    border: 2px solid var(--border);
+    box-shadow: 2px 2px 0px 0px var(--shadow);
   }
+  .section-label.pink { background: var(--pink-light); }
+  .section-label.yellow { background: var(--yellow-light); }
+  .section-label.blue { background: var(--blue-light); }
+  .section-label.green { background: var(--green-light); }
+  .section-label.purple { background: var(--purple-light); }
   .section-title {
-    font-size: 36px;
-    font-weight: 800;
+    font-size: 40px;
+    font-weight: 700;
     line-height: 1.2;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
   .section-subtitle {
     font-size: 18px;
@@ -110,43 +140,27 @@
 
   /* Hero */
   .hero {
-    padding-top: 160px;
-    padding-bottom: 80px;
+    padding-top: 120px;
+    padding-bottom: 40px;
     text-align: center;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 28px;
-  }
-  .hero-badge .dot {
-    width: 6px; height: 6px;
-    background: var(--green);
-    border-radius: 50%;
   }
   .hero h1 {
     font-size: 56px;
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 24px;
-    letter-spacing: -1px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 20px;
   }
-  .hero h1 .highlight {
-    background: linear-gradient(135deg, var(--accent-light), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .hero h1 .highlight-tiffany {
+    background: var(--tiffany-light);
+    padding: 0 8px;
+    border: 2px solid var(--tiffany);
+    box-shadow: 3px 3px 0px 0px var(--tiffany);
   }
   .hero p {
     font-size: 20px;
     color: var(--text-muted);
     max-width: 600px;
-    margin: 0 auto 40px;
+    margin: 0 auto 32px;
     line-height: 1.6;
   }
   .hero-actions {
@@ -154,58 +168,73 @@
     gap: 16px;
     justify-content: center;
     flex-wrap: wrap;
+    margin-bottom: 48px;
   }
-  .btn-primary {
+  .btn {
     padding: 14px 28px;
-    background: var(--accent);
-    color: white;
-    border-radius: 10px;
-    text-decoration: none;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 16px;
     font-weight: 600;
-    font-size: 15px;
-    transition: opacity 150ms;
-    border: none;
+    border: 2px solid var(--border);
     cursor: pointer;
-  }
-  .btn-primary:hover { opacity: 0.9; }
-  .btn-secondary {
-    padding: 14px 28px;
-    background: var(--surface-2);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 10px;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 15px;
-    transition: all 150ms;
-    cursor: pointer;
+    display: inline-block;
+    transition: all 100ms;
+    box-shadow: 4px 4px 0px 0px var(--shadow);
   }
-  .btn-secondary:hover { border-color: var(--accent); }
+  .btn:hover { box-shadow: 6px 6px 0px 0px var(--shadow); transform: translate(-1px,-1px); }
+  .btn:active { box-shadow: 2px 2px 0px 0px var(--shadow); transform: translate(1px,1px); }
+  .btn-tiffany { background: var(--tiffany); color: var(--text); }
+  .btn-white { background: var(--surface); color: var(--text); }
 
-  /* Pain Point */
+  /* Inventory bar */
+  .inventory {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .inv-slot {
+    width: 72px; height: 72px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    box-shadow: 3px 3px 0px 0px var(--shadow);
+    transition: all 150ms;
+    cursor: default;
+  }
+  .inv-slot:hover { transform: translateY(-4px); box-shadow: 3px 7px 0px 0px var(--shadow); }
+  .inv-slot .slot-icon { font-size: 26px; }
+  .inv-slot .slot-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .inv-slot.empty { opacity: 0.25; }
+  .inv-hint { text-align: center; font-size: 14px; color: var(--text-muted); margin-bottom: 48px; }
+
+  /* Pain point */
   .pain {
     background: var(--surface);
-    border-radius: 16px;
-    padding: 48px;
-    margin-top: 60px;
+    padding: 36px;
     text-align: left;
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid var(--border);
+    margin: 0 auto;
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0px 0px var(--shadow);
   }
   .pain-quote {
     font-size: 20px;
     font-style: italic;
-    color: var(--text-muted);
-    border-left: 3px solid var(--accent);
+    color: var(--text);
+    border-left: 4px solid var(--pink);
     padding-left: 20px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     line-height: 1.6;
   }
   .pain p {
     color: var(--text-muted);
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.7;
   }
 
@@ -213,96 +242,115 @@
   .pipeline-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
-    margin-top: 48px;
-    background: var(--border);
-    border-radius: 12px;
-    overflow: hidden;
+    gap: 16px;
+    margin-top: 40px;
   }
   .pipeline-step {
     background: var(--surface);
-    padding: 28px 24px;
+    padding: 24px 20px;
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0px 0px var(--shadow);
     position: relative;
   }
-  .pipeline-step .step-num {
+  .pipeline-step .step-badge {
+    display: inline-block;
     font-size: 11px;
     font-weight: 700;
-    color: var(--accent-light);
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    margin-bottom: 12px;
+    padding: 2px 10px;
+    margin-bottom: 14px;
+    border: 2px solid var(--border);
+    box-shadow: 2px 2px 0px 0px var(--shadow);
   }
+  .pipeline-step:nth-child(1) .step-badge { background: var(--pink-light); }
+  .pipeline-step:nth-child(2) .step-badge { background: var(--yellow-light); }
+  .pipeline-step:nth-child(3) .step-badge { background: var(--blue-light); }
+  .pipeline-step:nth-child(4) .step-badge { background: var(--green-light); }
   .pipeline-step h3 {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .pipeline-step p {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--text-muted);
     line-height: 1.5;
   }
   .pipeline-step .output {
     margin-top: 14px;
     padding-top: 14px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--green);
+    border-top: 2px dashed var(--border);
+    font-size: 14px;
+    color: var(--text);
     font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
   }
 
   /* Differentiators */
   .diff-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-top: 48px;
+    gap: 16px;
+    margin-top: 40px;
   }
   .diff-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 2px solid var(--border);
     padding: 28px;
+    box-shadow: 4px 4px 0px 0px var(--shadow);
+    transition: all 150ms;
   }
-  .diff-card .icon-wrap {
-    width: 40px; height: 40px;
-    border-radius: 8px;
+  .diff-card:hover { box-shadow: 6px 6px 0px 0px var(--shadow); transform: translate(-1px,-1px); }
+  .diff-card .card-icon {
+    width: 48px; height: 48px;
     display: flex; align-items: center; justify-content: center;
-    margin-bottom: 16px;
-    font-size: 20px;
+    font-size: 24px;
+    margin-bottom: 14px;
+    border: 2px solid var(--border);
+    box-shadow: 2px 2px 0px 0px var(--shadow);
   }
+  .diff-card:nth-child(1) .card-icon { background: var(--pink-light); }
+  .diff-card:nth-child(2) .card-icon { background: var(--yellow-light); }
+  .diff-card:nth-child(3) .card-icon { background: var(--blue-light); }
+  .diff-card:nth-child(4) .card-icon { background: var(--green-light); }
   .diff-card h3 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     margin-bottom: 8px;
   }
   .diff-card p {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--text-muted);
     line-height: 1.6;
   }
 
   /* Comparison */
   .compare-table {
-    margin-top: 48px;
+    margin-top: 40px;
     width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 15px;
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0px 0px var(--shadow);
+    background: var(--surface);
   }
   .compare-table th {
     text-align: left;
-    padding: 14px 20px;
+    padding: 14px 16px;
     border-bottom: 2px solid var(--border);
-    font-weight: 600;
-    color: var(--text-muted);
-    font-size: 12px;
+    font-weight: 700;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    background: var(--bg-alt);
   }
   .compare-table th:not(:first-child) { text-align: center; }
   .compare-table td {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    border-bottom: 1px solid #E8E0D0;
     color: var(--text-muted);
   }
   .compare-table td:first-child {
@@ -310,39 +358,35 @@
     font-weight: 500;
   }
   .compare-table td:not(:first-child) { text-align: center; }
-  .compare-table .check { color: var(--green); font-weight: 700; }
-  .compare-table .cross { color: #555; }
-  .compare-table .partial { color: var(--orange); }
-  .compare-table .highlight-col { background: var(--accent-bg); }
+  .compare-table .check { color: #0A8A3D; font-weight: 700; font-size: 18px; }
+  .compare-table .cross { color: #CCC; }
+  .compare-table .partial { color: #B8860B; font-weight: 500; }
+  .compare-table .highlight-col { background: var(--pink-light); }
 
   /* Demo */
-  .demo-section { padding-bottom: 60px; }
   .demo-frame {
-    margin-top: 48px;
-    border-radius: 12px;
+    margin-top: 40px;
+    border: 2px solid var(--border);
     overflow: hidden;
-    border: 1px solid var(--border);
     background: var(--surface);
+    box-shadow: 6px 6px 0px 0px var(--shadow);
   }
   .demo-toolbar {
-    background: var(--surface-2);
+    background: var(--bg-alt);
     padding: 10px 16px;
     display: flex;
     align-items: center;
     gap: 8px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
   }
-  .demo-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-  }
-  .demo-dot.r { background: #EF4444; }
-  .demo-dot.y { background: #F59E0B; }
-  .demo-dot.g { background: #10B981; }
+  .demo-dot { width: 12px; height: 12px; border: 2px solid var(--border); }
+  .demo-dot.r { background: var(--pink); }
+  .demo-dot.y { background: var(--yellow); }
+  .demo-dot.g { background: var(--green); }
   .demo-url {
     flex: 1;
     text-align: center;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
   }
@@ -354,22 +398,34 @@
 
   /* Install */
   .install-block {
-    margin-top: 48px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    margin-top: 40px;
+    background: var(--text);
+    border: 2px solid var(--border);
     overflow: hidden;
+    box-shadow: 6px 6px 0px 0px var(--shadow);
   }
   .install-header {
-    background: var(--surface-2);
+    background: #1E1A1A;
     padding: 12px 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--pink);
+    border-bottom: 2px solid #333;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+  }
+  .install-header .cursor-blink {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--pink);
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
   .install-body {
     padding: 24px;
@@ -377,74 +433,96 @@
   .install-body pre {
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
-    line-height: 1.8;
-    color: var(--text);
+    line-height: 2;
+    color: #E8E8E8;
     overflow-x: auto;
   }
-  .install-body .comment { color: var(--text-muted); }
+  .install-body .comment { color: #777; }
   .install-body .cmd { color: var(--green); }
-  .install-body .flag { color: var(--accent-light); }
+  .install-body .flag { color: var(--blue); }
+  .install-body .arg { color: var(--yellow); }
 
   .usage-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
     margin-top: 32px;
   }
   .usage-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
+    border: 2px solid var(--border);
+    padding: 20px;
+    box-shadow: 3px 3px 0px 0px var(--shadow);
   }
   .usage-card h4 {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--accent-light);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
   }
   .usage-card p {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .usage-card .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+  }
+  .usage-card .tag.required { background: var(--pink-light); }
+  .usage-card .tag.optional { background: var(--yellow-light); }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 80px 24px;
+  }
+  .cta-section h2 {
+    font-size: 36px;
+    font-weight: 700;
     margin-bottom: 12px;
   }
-  .usage-card code {
-    display: block;
-    background: var(--surface-2);
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--green);
-    overflow-x: auto;
+  .cta-section p {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
   }
 
   /* Footer */
   .footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 24px;
+    border-top: 2px solid var(--border);
+    padding: 32px 24px;
     text-align: center;
+    background: var(--bg-alt);
   }
   .footer p {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--text-muted);
   }
   .footer a {
-    color: var(--accent-light);
+    color: var(--text);
+    font-weight: 600;
     text-decoration: none;
   }
   .footer a:hover { text-decoration: underline; }
 
   /* Responsive */
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     .hero h1 { font-size: 36px; }
-    .hero p { font-size: 17px; }
+    .section-title { font-size: 28px; }
+    .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
+    .usage-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 28px; }
     .pipeline-grid { grid-template-columns: 1fr; }
     .diff-grid { grid-template-columns: 1fr; }
     .usage-grid { grid-template-columns: 1fr; }
-    .pain { padding: 28px; }
     .nav-links { display: none; }
-    .compare-table { font-size: 12px; }
-    .compare-table td, .compare-table th { padding: 10px 8px; }
+    .inventory { flex-wrap: wrap; justify-content: center; }
   }
 </style>
 </head>
@@ -458,100 +536,110 @@
       Prototype Co-Pilot
     </a>
     <div class="nav-links">
-      <a href="#how-it-works">How It Works</a>
-      <a href="#differentiators">Why This?</a>
-      <a href="#comparison">Comparison</a>
-      <a href="#demo">Live Demo</a>
+      <a href="#how-it-works">Pipeline</a>
+      <a href="#features">Features</a>
+      <a href="#comparison">Compare</a>
+      <a href="#demo">Demo</a>
       <a href="#install">Install</a>
     </div>
-    <a href="https://github.com/auwangcodex/prototype-copilot" class="nav-cta">GitHub</a>
+    <a href="https://github.com/auwangcodex/prototype-copilot" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
   </div>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">
-      <span class="dot"></span>
-      4 Claude Code skills &middot; Open source
-    </div>
-    <h1>From idea to <span class="highlight">research-backed prototype</span> in one session</h1>
-    <p>Prototype Co-Pilot automates the full PM workflow &mdash; competitive research, behavioral design, interactive prototyping, and stakeholder packaging &mdash; as Claude Code slash commands.</p>
+    <h1>From idea to<br><span class="highlight-tiffany">research-backed prototype</span><br>in one session.</h1>
+    <p>Automate the full PM workflow &mdash; competitive research, behavioral design, interactive prototyping, and stakeholder packaging &mdash; as Claude Code slash commands.</p>
     <div class="hero-actions">
-      <a href="#install" class="btn-primary">Get Started</a>
-      <a href="#demo" class="btn-secondary">See the Demo</a>
+      <a href="#install" class="btn btn-tiffany">Get started</a>
+      <a href="#demo" class="btn btn-white">See the demo</a>
     </div>
+
+    <!-- Inventory bar -->
+    <div class="inventory">
+      <div class="inv-slot"><span class="slot-icon">&#128270;</span><span class="slot-label">Research</span></div>
+      <div class="inv-slot"><span class="slot-icon">&#129513;</span><span class="slot-label">Design</span></div>
+      <div class="inv-slot"><span class="slot-icon">&#128296;</span><span class="slot-label">Build</span></div>
+      <div class="inv-slot"><span class="slot-icon">&#128230;</span><span class="slot-label">Package</span></div>
+      <div class="inv-slot empty"><span class="slot-icon">&#11036;</span></div>
+      <div class="inv-slot empty"><span class="slot-icon">&#11036;</span></div>
+      <div class="inv-slot empty"><span class="slot-icon">&#11036;</span></div>
+      <div class="inv-slot empty"><span class="slot-icon">&#11036;</span></div>
+      <div class="inv-slot empty"><span class="slot-icon">&#11036;</span></div>
+    </div>
+    <div class="inv-hint">your crafting inventory &mdash; 4 skills, open source</div>
 
     <!-- Pain point -->
     <div class="pain">
-      <div class="pain-quote">"I'm pivoting to PM. Every startup interview asks for a prototype or case study that demonstrates product thinking. But building one from scratch takes days — research, design, code, the pitch. Most people skip the research and just vibe-code something that looks good but has no depth."</div>
-      <p>Prototype Co-Pilot was born from this exact problem. It started as a workflow for a real Whoop PM interview (AI fitness coach), then was generalized into reusable skills, tested on BoldVoice and Canvas LMS, and refined through comparison with tools like Lovable. The result: a pipeline that produces prototypes grounded in real user research, not plausible-looking guesses.</p>
+      <div class="pain-quote">"I'm pivoting to PM. Every startup interview asks for a prototype that demonstrates product thinking. But building one from scratch takes days &mdash; research, design, code, the pitch. Most people skip the research and just vibe-code something that looks good but has no depth."</div>
+      <p>Prototype Co-Pilot was born from this exact problem. It started as a workflow for a real Whoop PM interview, then was generalized into reusable skills, tested on BoldVoice and Canvas LMS, and refined through comparison with tools like Lovable. The result: a pipeline that produces prototypes grounded in real user research, not plausible-looking guesses.</p>
     </div>
   </div>
 </section>
 
 <!-- How it Works -->
-<section id="how-it-works">
+<section id="how-it-works" style="background: var(--bg-alt);">
   <div class="container">
-    <div class="section-label">Pipeline</div>
+    <span class="section-label pink">Pipeline</span>
     <h2 class="section-title">Four skills. One coherent workflow.</h2>
-    <p class="section-subtitle">Each skill chains into the next, building on the outputs of the previous phase. You make the strategic decisions at human-in-the-loop checkpoints.</p>
+    <p class="section-subtitle">Each skill chains into the next. You make the strategic decisions at human-in-the-loop checkpoints.</p>
 
     <div class="pipeline-grid">
       <div class="pipeline-step">
-        <div class="step-num">Step 1</div>
+        <span class="step-badge">Step 1</span>
         <h3>/pm-research</h3>
         <p>Scrapes 50+ app reviews, analyzes 3-5 competitors, runs live product walkthroughs via Claude in Chrome, applies Branching 5 Whys, and audits underutilized data.</p>
-        <div class="output">&#8594; research-brief.md<br>&#8594; design-tokens.md</div>
+        <div class="output">&rarr; research-brief.md<br>&rarr; design-tokens.md</div>
       </div>
       <div class="pipeline-step">
-        <div class="step-num">Step 2</div>
+        <span class="step-badge">Step 2</span>
         <h3>/pm-design</h3>
-        <p>Presents 2-3 behavioral frameworks grounded in research. You choose. Then generates persona specs with coach personalities, day-in-life scenarios, and sample dialogue.</p>
-        <div class="output">&#8594; design-spec.md<br>&#8594; persona-spec.md</div>
+        <p>Presents 2-3 behavioral frameworks grounded in research. You choose. Then generates user personas with goals, scenarios, and sample interactions tailored to the product.</p>
+        <div class="output">&rarr; design-spec.md<br>&rarr; persona-spec.md</div>
       </div>
       <div class="pipeline-step">
-        <div class="step-num">Step 3</div>
+        <span class="step-badge">Step 3</span>
         <h3>/pm-build</h3>
         <p>Builds a zero-build-step HTML prototype (React 18 from CDN). Single file, opens in any browser. Interactive components with real design tokens from the research phase.</p>
-        <div class="output">&#8594; prototype.html<br>&#8594; (open in browser)</div>
+        <div class="output">&rarr; prototype.html<br>&rarr; (open in browser)</div>
       </div>
       <div class="pipeline-step">
-        <div class="step-num">Step 4</div>
+        <span class="step-badge">Step 4</span>
         <h3>/pm-package</h3>
         <p>Generates stakeholder email (500-800w), blog case study (1500-2500w), and a Lovable.dev build spec with verified data for production handoff.</p>
-        <div class="output">&#8594; email.md<br>&#8594; blog.md<br>&#8594; lovable-prompt.md</div>
+        <div class="output">&rarr; email.md<br>&rarr; blog.md<br>&rarr; lovable-prompt.md</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Differentiators -->
-<section id="differentiators" style="background: var(--surface);">
+<section id="features">
   <div class="container">
-    <div class="section-label">Why This Matters</div>
-    <h2 class="section-title">The product thinking layer that vibe-coding skips</h2>
-    <p class="section-subtitle">Most AI prototyping tools go from prompt to code. Prototype Co-Pilot adds the research and design rigor that makes prototypes defensible in an interview or stakeholder review.</p>
+    <span class="section-label yellow">Features</span>
+    <h2 class="section-title">The product thinking layer<br>that vibe-coding skips.</h2>
+    <p class="section-subtitle">Most AI prototyping tools go from prompt to code. Prototype Co-Pilot adds the research and design rigor that makes prototypes defensible in an interview.</p>
 
     <div class="diff-grid">
       <div class="diff-card">
-        <div class="icon-wrap" style="background: rgba(16,185,129,0.1); color: var(--green);">&#128270;</div>
+        <div class="card-icon">&#9878;&#65039;</div>
         <h3>Live Product Walkthroughs</h3>
         <p>Claude navigates the actual product in Chrome, documenting every screen, extracting real UI copy, and capturing the exact user journey. Your prototype matches the real thing because it was built from the real thing.</p>
       </div>
       <div class="diff-card">
-        <div class="icon-wrap" style="background: rgba(124,58,237,0.1); color: var(--accent-light);">&#129504;</div>
+        <div class="card-icon">&#129504;</div>
         <h3>Behavioral Frameworks</h3>
-        <p>Every prototype is grounded in a behavioral framework (Hook Model, Cognitive Load Reduction, Self-Determination Theory) chosen based on the research findings, not a random template.</p>
+        <p>Every prototype is grounded in a behavioral framework (Hook Model, Cognitive Load Reduction, Self-Determination Theory) chosen based on research findings, not a random template.</p>
       </div>
       <div class="diff-card">
-        <div class="icon-wrap" style="background: rgba(59,130,246,0.1); color: var(--blue);">&#128101;</div>
+        <div class="card-icon">&#129309;</div>
         <h3>Human-in-the-Loop</h3>
-        <p>The agent pauses at critical decisions: framework selection, persona choice, layout variant. You make the strategic calls. The AI does the heavy lifting. Better outcomes than full automation.</p>
+        <p>The agent pauses at critical decisions: framework selection, persona choice, layout variant. You make the strategic calls. The AI does the heavy lifting.</p>
       </div>
       <div class="diff-card">
-        <div class="icon-wrap" style="background: rgba(245,158,11,0.1); color: var(--orange);">&#128640;</div>
-        <h3>Research-Grounded Lovable Export</h3>
+        <div class="card-icon">&#128142;</div>
+        <h3>Lovable Export</h3>
         <p>The pm-package skill generates a Lovable.dev build spec packed with verified data from your research. Lovable builds with facts, not hallucinated placeholder content.</p>
       </div>
     </div>
@@ -559,89 +647,89 @@
 </section>
 
 <!-- Comparison -->
-<section id="comparison">
+<section id="comparison" style="background: var(--bg-alt);">
   <div class="container">
-    <div class="section-label">Comparison</div>
-    <h2 class="section-title">Prototype Co-Pilot vs. the alternatives</h2>
+    <span class="section-label blue">Compare</span>
+    <h2 class="section-title">Prototype Co-Pilot vs. the alternatives.</h2>
     <p class="section-subtitle">Different tools for different layers. Prototype Co-Pilot adds the research and design thinking that other approaches skip.</p>
 
     <table class="compare-table">
       <thead>
         <tr>
           <th>Capability</th>
-          <th class="highlight-col">Prototype Co-Pilot</th>
+          <th class="highlight-col">Co-Pilot</th>
           <th>Lovable / Bolt</th>
-          <th>Raw Claude Code</th>
+          <th>Raw Claude</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Automated user research (50+ reviews)</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
           <td class="partial">Manual</td>
         </tr>
         <tr>
           <td>Live product walkthrough (Claude in Chrome)</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
           <td class="partial">Manual</td>
         </tr>
         <tr>
           <td>Behavioral framework selection</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
           <td class="cross">&mdash;</td>
         </tr>
         <tr>
-          <td>Persona-driven design spec</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td>Product-specific persona generation</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
           <td class="partial">Manual</td>
         </tr>
         <tr>
           <td>Design token extraction from live product</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
           <td class="partial">Manual</td>
         </tr>
         <tr>
           <td>Zero-build-step prototype</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
-          <td class="check">&#10003;</td>
+          <td class="check">&#10004;</td>
         </tr>
         <tr>
           <td>Production-ready app (auth, DB, deploy)</td>
           <td class="cross">&mdash;</td>
-          <td class="check">&#10003;</td>
+          <td class="check">&#10004;</td>
           <td class="partial">Manual</td>
         </tr>
         <tr>
           <td>Stakeholder email + blog + Lovable export</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
           <td class="cross">&mdash;</td>
         </tr>
         <tr>
           <td>Reproducible skill-based workflow</td>
-          <td class="highlight-col check">&#10003;</td>
+          <td class="highlight-col check">&#10004;</td>
           <td class="cross">&mdash;</td>
           <td class="cross">&mdash;</td>
         </tr>
       </tbody>
     </table>
 
-    <p style="margin-top: 24px; font-size: 14px; color: var(--text-muted); text-align: center;">Prototype Co-Pilot handles research &amp; design thinking. Lovable handles production engineering. They're complementary &mdash; the pm-package skill bridges them with a research-grounded build spec.</p>
+    <p style="margin-top: 20px; font-size: 15px; color: var(--text-muted); text-align: center;">Prototype Co-Pilot handles research &amp; design thinking. Lovable handles production engineering. They're complementary &mdash; the pm-package skill bridges them.</p>
   </div>
 </section>
 
 <!-- Demo -->
-<section id="demo" class="demo-section" style="background: var(--surface);">
+<section id="demo">
   <div class="container">
-    <div class="section-label">Live Demo</div>
-    <h2 class="section-title">Canvas Copilot: built in one session</h2>
-    <p class="section-subtitle">This prototype was generated by running the full pipeline on Canvas LMS (hbs.instructure.com). It reimagines the Canvas dashboard with an AI chatbot that replaces hierarchical navigation with conversational retrieval.</p>
+    <span class="section-label green">Live Demo</span>
+    <h2 class="section-title">Canvas Copilot: built in one session.</h2>
+    <p class="section-subtitle">This prototype was generated by running the full pipeline on Canvas LMS. It reimagines the dashboard with an AI chatbot that replaces hierarchical navigation with conversational retrieval.</p>
 
     <div class="demo-frame">
       <div class="demo-toolbar">
@@ -652,20 +740,20 @@
       </div>
       <iframe src="demos/canvas-copilot.html" title="Canvas Copilot Prototype Demo"></iframe>
     </div>
-    <p style="margin-top: 16px; font-size: 13px; color: var(--text-muted); text-align: center;">Click the demo scenario buttons at the bottom to see pre-scripted AI responses. Try typing a question in the search bar.</p>
+    <p style="margin-top: 14px; font-size: 14px; color: var(--text-muted); text-align: center;">Click the demo scenario buttons at the bottom to see pre-scripted AI responses. Try typing a question in the search bar.</p>
   </div>
 </section>
 
 <!-- Install -->
-<section id="install">
+<section id="install" style="background: var(--bg-alt);">
   <div class="container">
-    <div class="section-label">Get Started</div>
-    <h2 class="section-title">Install in 60 seconds</h2>
+    <span class="section-label purple">Get Started</span>
+    <h2 class="section-title">Install in 60 seconds.</h2>
     <p class="section-subtitle">Three commands. Then open Claude Code and start with /pm-research.</p>
 
     <div class="install-block">
       <div class="install-header">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span class="cursor-blink"></span>
         Terminal
       </div>
       <div class="install-body">
@@ -679,45 +767,52 @@
 <span class="cmd">claude</span>
 
 <span class="comment"># Run the full pipeline on any product</span>
-<span class="flag">/pm-research</span> Canvas <span class="flag">--idea</span> "AI chatbot for course navigation"
-<span class="flag">/pm-design</span> Canvas
-<span class="flag">/pm-build</span> austin <span class="flag">--project</span> Canvas
-<span class="flag">/pm-package</span> <span class="flag">--format</span> all <span class="flag">--project</span> Canvas</pre>
+<span class="flag">/pm-research</span> <span class="arg">Notion</span> <span class="flag">--idea</span> <span class="arg">"AI writing assistant"</span>
+<span class="flag">/pm-design</span> <span class="arg">Notion</span>
+<span class="flag">/pm-build</span> <span class="arg">&lt;persona-name&gt;</span> <span class="flag">--project</span> <span class="arg">Notion</span>    <span class="comment"># use persona name from /pm-design</span>
+<span class="flag">/pm-package</span> <span class="flag">--format</span> <span class="arg">all</span> <span class="flag">--project</span> <span class="arg">Notion</span></pre>
       </div>
     </div>
 
     <div class="usage-grid">
       <div class="usage-card">
-        <h4>Requirements</h4>
-        <p>What you need before installing</p>
-        <code>Claude Code CLI<br>Python 3<br>macOS or Linux</code>
+        <h4>Claude Code CLI</h4>
+        <p>The runtime that powers the skills</p>
+        <span class="tag required">Required</span>
       </div>
       <div class="usage-card">
-        <h4>Optional: Claude in Chrome</h4>
-        <p>For live product walkthroughs during research</p>
-        <code>Install the Claude in Chrome<br>MCP extension for your<br>browser to enable /pm-research<br>live walkthrough mode</code>
+        <h4>Claude in Chrome</h4>
+        <p>Live product walkthroughs during research</p>
+        <span class="tag optional">Optional</span>
       </div>
       <div class="usage-card">
-        <h4>Optional: Mobbin MCP</h4>
-        <p>For UI screenshot references during design</p>
-        <code>Mobbin Pro account at<br>mobbin.com for richer<br>UI research references</code>
+        <h4>Mobbin MCP</h4>
+        <p>UI screenshot references for design</p>
+        <span class="tag optional">Optional</span>
       </div>
       <div class="usage-card">
-        <h4>Optional: Firecrawl MCP</h4>
-        <p>For JS-rendered pages that WebFetch can't scrape</p>
-        <code>Firecrawl API key for<br>scraping dynamic content<br>(free tier available)</code>
+        <h4>Firecrawl MCP</h4>
+        <p>JS-rendered page scraping fallback</p>
+        <span class="tag optional">Optional</span>
       </div>
     </div>
   </div>
 </section>
 
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to build?</h2>
+    <p>Free and open source. Set up in minutes.</p>
+    <a href="https://github.com/auwangcodex/prototype-copilot" class="btn btn-tiffany" target="_blank" rel="noopener">Get started on GitHub</a>
+  </div>
+</section>
+
 <!-- Footer -->
 <footer class="footer">
-  <p>Built by <a href="https://github.com/auwangcodex">Austin Wang</a> &middot; HBS '27 &middot; <a href="https://github.com/auwangcodex/prototype-copilot">View on GitHub</a></p>
-  <p style="margin-top: 8px; font-size: 12px;">Powered by <a href="https://claude.ai/code">Claude Code</a> skills</p>
+  <p>Built by <a href="https://github.com/auwangcodex" target="_blank" rel="noopener">Austin Wang</a> &middot; HBS '27 &middot; <a href="https://github.com/auwangcodex/prototype-copilot" target="_blank" rel="noopener">View on GitHub</a></p>
+  <p style="margin-top: 6px; font-size: 13px;">Powered by <a href="https://claude.ai/code">Claude Code</a></p>
 </footer>
 
 </body>
 </html>
-</content>
-</invoke>
