@@ -291,7 +291,7 @@
   /* Differentiators */
   .diff-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-top: 40px;
   }
@@ -311,10 +311,12 @@
     border: 2px solid var(--border);
     box-shadow: 2px 2px 0px 0px var(--shadow);
   }
-  .diff-card:nth-child(1) .card-icon { background: var(--pink-light); }
+  .diff-card:nth-child(1) .card-icon { background: var(--tiffany-light); }
   .diff-card:nth-child(2) .card-icon { background: var(--yellow-light); }
-  .diff-card:nth-child(3) .card-icon { background: var(--blue-light); }
-  .diff-card:nth-child(4) .card-icon { background: var(--green-light); }
+  .diff-card:nth-child(3) .card-icon { background: var(--pink-light); }
+  .diff-card:nth-child(4) .card-icon { background: var(--blue-light); }
+  .diff-card:nth-child(5) .card-icon { background: var(--green-light); }
+  .diff-card:nth-child(6) .card-icon { background: var(--purple-light); }
   .diff-card h3 {
     font-size: 18px;
     font-weight: 700;
@@ -514,6 +516,7 @@
     .hero h1 { font-size: 36px; }
     .section-title { font-size: 28px; }
     .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
+    .diff-grid { grid-template-columns: repeat(2, 1fr); }
     .usage-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 600px) {
@@ -550,7 +553,7 @@
 <section class="hero">
   <div class="container">
     <h1>From idea to<br><span class="highlight-tiffany">research-backed prototype</span><br>in one session.</h1>
-    <p>Automate the full PM workflow &mdash; competitive research, behavioral design, interactive prototyping, and stakeholder packaging &mdash; as Claude Code slash commands.</p>
+    <p>Automate the full PM workflow &mdash; competitive research via third-party MCPs, behavioral design, interactive prototyping, and stakeholder packaging &mdash; as composable Claude Code skills.</p>
     <div class="hero-actions">
       <a href="#install" class="btn btn-tiffany">Get started</a>
       <a href="#demo" class="btn btn-white">See the demo</a>
@@ -573,7 +576,7 @@
     <!-- Pain point -->
     <div class="pain">
       <div class="pain-quote">"I'm pivoting to PM. Every startup interview asks for a prototype that demonstrates product thinking. But building one from scratch takes days &mdash; research, design, code, the pitch. Most people skip the research and just vibe-code something that looks good but has no depth."</div>
-      <p>Prototype Co-Pilot was born from this exact problem. It started as a workflow for a real Whoop PM interview, then was generalized into reusable skills, tested on BoldVoice and Canvas LMS, and refined through comparison with tools like Lovable. The result: a pipeline that produces prototypes grounded in real user research, not plausible-looking guesses.</p>
+      <p>Prototype Co-Pilot was born from this exact problem. It started as a workflow for a real Whoop PM interview, then was generalized into reusable skills that orchestrate third-party MCPs (Firecrawl for web scraping, Mobbin for UI references) and community skills. Tested on BoldVoice and Canvas LMS, refined through comparison with Lovable. The result: a pipeline that produces prototypes grounded in real user research, not plausible-looking guesses.</p>
     </div>
   </div>
 </section>
@@ -589,7 +592,7 @@
       <div class="pipeline-step">
         <span class="step-badge">Step 1</span>
         <h3>/pm-research</h3>
-        <p>Scrapes 50+ app reviews, analyzes 3-5 competitors, runs live product walkthroughs via Claude in Chrome, applies Branching 5 Whys, and audits underutilized data.</p>
+        <p>Orchestrates Firecrawl MCP to scrape 50+ app reviews, analyzes 3-5 competitors, runs live product walkthroughs via Claude in Chrome, pulls UI refs from Mobbin MCP, applies Branching 5 Whys, and audits underutilized data.</p>
         <div class="output">&rarr; research-brief.md<br>&rarr; design-tokens.md</div>
       </div>
       <div class="pipeline-step">
@@ -619,18 +622,23 @@
   <div class="container">
     <span class="section-label yellow">Features</span>
     <h2 class="section-title">The product thinking layer<br>that vibe-coding skips.</h2>
-    <p class="section-subtitle">Most AI prototyping tools go from prompt to code. Prototype Co-Pilot adds the research and design rigor that makes prototypes defensible in an interview.</p>
+    <p class="section-subtitle">Most AI prototyping tools go from prompt to code. Prototype Co-Pilot adds research, design rigor, and a composable ecosystem of third-party MCPs and skills that make prototypes defensible in an interview.</p>
 
     <div class="diff-grid">
+      <div class="diff-card">
+        <div class="card-icon">&#128268;</div>
+        <h3>Third-Party MCP Ecosystem</h3>
+        <p>Integrates Firecrawl for JS-rendered page scraping, Mobbin for UI screenshot references, and any MCP server you configure. The pipeline leverages external tools Claude Code can't access alone &mdash; turning it from a code generator into a research-powered system.</p>
+      </div>
+      <div class="diff-card">
+        <div class="card-icon">&#129504;</div>
+        <h3>Composable Skill Architecture</h3>
+        <p>Each skill (research, design, build, package) is a standalone SKILL.md file. Add community skills, swap in your own frameworks, or chain third-party skills from other authors. The pipeline is open and extensible by design.</p>
+      </div>
       <div class="diff-card">
         <div class="card-icon">&#9878;&#65039;</div>
         <h3>Live Product Walkthroughs</h3>
         <p>Claude navigates the actual product in Chrome, documenting every screen, extracting real UI copy, and capturing the exact user journey. Your prototype matches the real thing because it was built from the real thing.</p>
-      </div>
-      <div class="diff-card">
-        <div class="card-icon">&#129504;</div>
-        <h3>Behavioral Frameworks</h3>
-        <p>Every prototype is grounded in a behavioral framework (Hook Model, Cognitive Load Reduction, Self-Determination Theory) chosen based on research findings, not a random template.</p>
       </div>
       <div class="diff-card">
         <div class="card-icon">&#129309;</div>
@@ -639,6 +647,11 @@
       </div>
       <div class="diff-card">
         <div class="card-icon">&#128142;</div>
+        <h3>Behavioral Frameworks</h3>
+        <p>Every prototype is grounded in a behavioral framework (Hook Model, Cognitive Load Reduction, Self-Determination Theory) chosen based on research findings, not a random template.</p>
+      </div>
+      <div class="diff-card">
+        <div class="card-icon">&#128640;</div>
         <h3>Lovable Export</h3>
         <p>The pm-package skill generates a Lovable.dev build spec packed with verified data from your research. Lovable builds with facts, not hallucinated placeholder content.</p>
       </div>
@@ -663,6 +676,18 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td>Third-party MCP integration (Firecrawl, Mobbin)</td>
+          <td class="highlight-col check">&#10004;</td>
+          <td class="cross">&mdash;</td>
+          <td class="partial">Manual config</td>
+        </tr>
+        <tr>
+          <td>Composable skill ecosystem (community-extensible)</td>
+          <td class="highlight-col check">&#10004;</td>
+          <td class="cross">&mdash;</td>
+          <td class="cross">&mdash;</td>
+        </tr>
         <tr>
           <td>Automated user research (50+ reviews)</td>
           <td class="highlight-col check">&#10004;</td>
@@ -721,26 +746,77 @@
     </table>
 
     <p style="margin-top: 20px; font-size: 15px; color: var(--text-muted); text-align: center;">Prototype Co-Pilot handles research &amp; design thinking. Lovable handles production engineering. They're complementary &mdash; the pm-package skill bridges them.</p>
+    <div style="margin-top: 24px; padding: 20px 24px; background: var(--surface); border: 2px solid var(--border); box-shadow: 4px 4px 0px 0px var(--shadow);">
+      <p style="font-size: 15px; color: var(--text); line-height: 1.7;"><strong>The key differentiator:</strong> Prototype Co-Pilot doesn't just prompt Claude &mdash; it orchestrates an ecosystem of third-party MCP servers (Firecrawl, Mobbin, custom scrapers) and composable skills that any developer can extend. Raw Claude Code has access to none of this context without manual configuration. The skills encode the <em>workflow intelligence</em> that turns a general-purpose coding agent into a domain-specific research machine.</p>
+    </div>
   </div>
 </section>
 
 <!-- Demo -->
 <section id="demo">
   <div class="container">
-    <span class="section-label green">Live Demo</span>
-    <h2 class="section-title">Canvas Copilot: built in one session.</h2>
-    <p class="section-subtitle">This prototype was generated by running the full pipeline on Canvas LMS. It reimagines the dashboard with an AI chatbot that replaces hierarchical navigation with conversational retrieval.</p>
+    <span class="section-label green">Live Demos</span>
+    <h2 class="section-title">Same prompt. Different depth.</h2>
+    <p class="section-subtitle">Compare what you get from vanilla Claude Code (no skills, no MCPs) vs. the full Prototype Co-Pilot pipeline with research, behavioral design, and third-party integrations.</p>
 
-    <div class="demo-frame">
-      <div class="demo-toolbar">
-        <span class="demo-dot r"></span>
-        <span class="demo-dot y"></span>
-        <span class="demo-dot g"></span>
-        <span class="demo-url">demos/canvas-copilot.html</span>
+    <!-- Canvas Comparison -->
+    <h3 style="font-size: 22px; font-weight: 700; margin-top: 48px; margin-bottom: 8px;">Canvas LMS AI Chatbot</h3>
+    <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 24px;">Prompt: "Build me an AI chatbot for Canvas LMS students." Left: raw Claude Code output. Right: Prototype Co-Pilot pipeline with Firecrawl research, Mobbin UI refs, and behavioral design.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <!-- Vanilla -->
+      <div>
+        <div style="background: var(--surface); border: 2px solid var(--border); padding: 10px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 3px 3px 0px 0px var(--shadow);">
+          <span style="display: inline-block; width: 10px; height: 10px; background: #CCC; border: 1px solid var(--border);"></span>
+          Claude Code (no skills)
+        </div>
+        <div class="demo-frame" style="margin-top: 0; box-shadow: 3px 3px 0px 0px var(--shadow);">
+          <div class="demo-toolbar">
+            <span class="demo-dot r"></span>
+            <span class="demo-dot y"></span>
+            <span class="demo-dot g"></span>
+            <span class="demo-url">canvas-vanilla.html</span>
+          </div>
+          <iframe src="demos/canvas-vanilla.html" title="Canvas Vanilla Demo" style="width: 100%; height: 520px; border: none;"></iframe>
+        </div>
+        <div style="margin-top: 10px; padding: 12px 16px; background: var(--surface); border: 2px solid var(--border); font-size: 13px; color: var(--text-muted); box-shadow: 2px 2px 0px 0px var(--shadow);">
+          <strong style="color: var(--text);">What's missing:</strong> Generic responses, no real Canvas terminology, no user persona, no design system from the actual product, no behavioral framework driving the UX.
+        </div>
       </div>
-      <iframe src="demos/canvas-copilot.html" title="Canvas Copilot Prototype Demo"></iframe>
+      <!-- With Skills + MCPs -->
+      <div>
+        <div style="background: var(--tiffany-light); border: 2px solid var(--border); padding: 10px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 3px 3px 0px 0px var(--shadow);">
+          <span style="display: inline-block; width: 10px; height: 10px; background: var(--tiffany); border: 1px solid var(--border);"></span>
+          Prototype Co-Pilot (skills + MCPs)
+        </div>
+        <div class="demo-frame" style="margin-top: 0; box-shadow: 3px 3px 0px 0px var(--shadow);">
+          <div class="demo-toolbar">
+            <span class="demo-dot r"></span>
+            <span class="demo-dot y"></span>
+            <span class="demo-dot g"></span>
+            <span class="demo-url">canvas-copilot.html</span>
+          </div>
+          <iframe src="demos/canvas-copilot.html" title="Canvas Copilot Prototype Demo" style="width: 100%; height: 520px; border: none;"></iframe>
+        </div>
+        <div style="margin-top: 10px; padding: 12px 16px; background: var(--surface); border: 2px solid var(--border); font-size: 13px; color: var(--text-muted); box-shadow: 2px 2px 0px 0px var(--shadow);">
+          <strong style="color: var(--text);">What's added:</strong> Real Canvas design tokens (Firecrawl), scenario-specific AI responses, Hook Model framework, MBA student persona, real course names, deadline-aware interactions.
+        </div>
+      </div>
     </div>
-    <p style="margin-top: 14px; font-size: 14px; color: var(--text-muted); text-align: center;">Click the demo scenario buttons at the bottom to see pre-scripted AI responses. Try typing a question in the search bar.</p>
+
+    <!-- Whoop AI Coach Demo -->
+    <h3 style="font-size: 22px; font-weight: 700; margin-top: 64px; margin-bottom: 8px;">Whoop AI Coach: Sarah</h3>
+    <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 24px;">Built for a PM interview. Full pipeline: 50+ Whoop app reviews scraped via Firecrawl, competitive analysis of Oura/Fitbit AI features, Self-Determination Theory framework, and a persona modeled on real user segments.</p>
+
+    <div style="display: flex; justify-content: center;">
+      <!-- Phone frame -->
+      <div style="width: 320px; height: 640px; border-radius: 40px; border: 4px solid #1a1a1a; background: #1a1a1a; padding: 8px; box-shadow: 6px 6px 0px 0px var(--shadow); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 80px; height: 20px; background: #1a1a1a; border-radius: 0 0 12px 12px; z-index: 10;"></div>
+        <iframe src="https://whoop-sarah-prototype.vercel.app/" title="Whoop AI Coach Sarah Demo" style="width: 100%; height: 100%; border: none; border-radius: 32px; background: #131316;"></iframe>
+      </div>
+    </div>
+    <p style="margin-top: 14px; font-size: 14px; color: var(--text-muted); text-align: center;">Interactive AI coaching prototype with game plans, meal analysis, photo verification, and motivational personas. Built in one session with the full pipeline.</p>
+    <p style="margin-top: 6px; text-align: center;"><a href="https://whoop-sarah-prototype.vercel.app/" target="_blank" rel="noopener" style="font-size: 14px; color: var(--tiffany); font-weight: 600; text-decoration: none;">Open full demo &rarr;</a></p>
   </div>
 </section>
 
@@ -781,19 +857,19 @@
         <span class="tag required">Required</span>
       </div>
       <div class="usage-card">
-        <h4>Claude in Chrome</h4>
-        <p>Live product walkthroughs during research</p>
-        <span class="tag optional">Optional</span>
+        <h4>Firecrawl MCP</h4>
+        <p>Scrapes JS-rendered pages, app reviews, pricing tables</p>
+        <span class="tag required">Required</span>
       </div>
       <div class="usage-card">
         <h4>Mobbin MCP</h4>
-        <p>UI screenshot references for design</p>
+        <p>UI screenshot references and design pattern library</p>
         <span class="tag optional">Optional</span>
       </div>
       <div class="usage-card">
-        <h4>Firecrawl MCP</h4>
-        <p>JS-rendered page scraping fallback</p>
-        <span class="tag optional">Optional</span>
+        <h4>Community Skills</h4>
+        <p>Drop any SKILL.md into ~/.claude/skills/ to extend</p>
+        <span class="tag optional">Extensible</span>
       </div>
     </div>
   </div>
